@@ -133,26 +133,29 @@ const ActivityIcon = memo(() => {
   )
   const { enable = false, endpoint = '/fn/ps/update' } = activityConfig || {}
   const activity = useActivity()
+  type ActivityResponse = {
+    processName: string
+    processInfo?:
+      | {
+          name: string
+          iconBase64?: string
+          iconUrl?: string
+          description?: string
+        }
+      | string
+    mediaInfo?: {
+      title: string
+      artist: string
+    }
+  }
 
   const isPageActive = usePageIsActive()
-  const { data } = useQuery({
+  const { data } = useQuery<ActivityResponse>({
     queryKey: ['activity'],
     queryFn: async () =>
       await apiClient
         .proxy(endpoint)
-        .get<{
-          processName: string
-          processInfo?: {
-            name: string
-            iconBase64?: string
-            iconUrl?: string
-            description?: string
-          }
-          mediaInfo?: {
-            title: string
-            artist: string
-          }
-        }>()
+        .get<ActivityResponse>()
         .then((res) => res)
         .catch(() => ({
           processName: '',
