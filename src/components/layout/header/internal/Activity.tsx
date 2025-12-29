@@ -44,20 +44,20 @@ const PROCESS_MAP: Record<
   string,
   {
     name: string
-    emoji: string
+    icon: string
   }
 > = {
-  firefox: { name: 'Firefox', emoji: '🦊' },
-  chrome: { name: 'Google Chrome', emoji: '🌏' },
-  sublime_text: { name: 'Sublime Text', emoji: '📝' },
-  qq: { name: 'QQ', emoji: '🐧' },
-  telegram: { name: 'Telegram', emoji: '✈️' },
-  steamwebhelper: { name: 'Steam', emoji: '🎮' },
-  explorer: { name: 'Windows Explorer', emoji: '📁' },
-  weixin: { name: 'WeChat', emoji: '💬' },
+  firefox: { name: 'Firefox', icon: '🦊' },
+  chrome: { name: 'Google Chrome', icon: '🌏' },
+  sublime_text: { name: 'Sublime Text', icon: '📝' },
+  qq: { name: 'QQ', icon: '🐧' },
+  telegram: { name: 'Telegram', icon: '✈️' },
+  steamwebhelper: { name: 'Steam', icon: '🎮' },
+  explorer: { name: 'Windows Explorer', icon: '📁' },
+  weixin: { name: 'WeChat', icon: '💬' },
 }
 
-const DEFAULT_PROCESS = { name: 'Unknow App', emoji: '📦' }
+const DEFAULT_PROCESS = { name: 'Unknow App', icon: '📦' }
 
 const emojiToDataUrl = (emoji: string) =>
   `data:image/svg+xml;utf8,${encodeURIComponent(
@@ -76,11 +76,12 @@ const normalizeProcessInfo = (
     (typeof processInfo === 'string' ? processInfo : processName) ?? ''
   if (!rawName) return null
 
-  const { name, emoji } = PROCESS_MAP[rawName.toLowerCase()] ?? DEFAULT_PROCESS
+  const mapped = PROCESS_MAP[rawName.toLowerCase()] ?? DEFAULT_PROCESS
 
   return {
-    name,
-    iconUrl: emojiToDataUrl(emoji),
+    name: mapped.name,
+    iconEmoji: mapped.icon,
+    iconUrl: emojiToDataUrl(mapped.icon),
   }
 }
 
