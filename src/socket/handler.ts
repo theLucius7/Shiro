@@ -13,7 +13,10 @@ import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.
 import * as React from 'react'
 
 import { setOnlineCount } from '~/atoms'
-import { setActivityMediaInfo, setActivityProcessInfo } from '~/atoms/activity'
+import {
+  setActivityMediaInfo,
+  setActivityProcessInfoFromPayload,
+} from '~/atoms/activity'
 import {
   FaSolidFeatherAlt,
   IcTwotoneSignpost,
@@ -283,15 +286,19 @@ export const eventHandler = (
       break
     }
 
+    case 'media-update':
     case 'fn#media-update': {
-      setActivityMediaInfo(data)
+      if (data?.title) {
+        setActivityMediaInfo(data)
+      } else {
+        setActivityMediaInfo(null)
+      }
       break
     }
 
+    case 'ps-update':
     case 'fn#ps-update': {
-      const process = data.processInfo as ProcessInfo
-
-      setActivityProcessInfo(process)
+      setActivityProcessInfoFromPayload(data)
       break
     }
 
@@ -313,10 +320,4 @@ export const eventHandler = (
     }
   }
   WsEvent.emit(type as BusinessEvents, data)
-}
-
-interface ProcessInfo {
-  name: string
-  description: string
-  iconBase64: string
 }

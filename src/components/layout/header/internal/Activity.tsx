@@ -71,7 +71,7 @@ const ActivityIcon = memo(() => {
     queryFn: async () =>
       await apiClient
         .proxy(endpoint)
-        .post<{
+        .get<{
           processName: string
           processInfo?: {
             name: string
