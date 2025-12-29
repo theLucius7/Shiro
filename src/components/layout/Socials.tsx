@@ -12,6 +12,7 @@ import { FloatPopover } from '~/components/ui/float-popover'
 import { BottomToUpTransitionView } from '~/components/ui/transition'
 import { clsxm } from '~/lib/helper'
 
+// 1. 定义数据结构
 type SocialLink = {
   id: string
   url: string
@@ -19,6 +20,7 @@ type SocialLink = {
   color: string
 }
 
+// 2. 静态配置数据 (含品牌色)
 const socialLinks: SocialLink[] = [
   {
     id: 'github',
@@ -64,6 +66,7 @@ const socialLinks: SocialLink[] = [
   },
 ]
 
+// 3. 图标映射表
 const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   github: GitHubBrandIcon,
   twitter: XIcon,
@@ -79,6 +82,7 @@ type SocialsProps = {
   transitionDelayStart?: number
 }
 
+// 4. 组件主体
 export const Socials = ({
   className,
   transitionDelayStart = 0,
@@ -100,15 +104,16 @@ export const Socials = ({
               type="tooltip"
               triggerElement={
                 <MotionButtonBase
+                  // 核心修复：移除 bg-neutral-900/80 等类名，保留布局类名
                   className="center flex aspect-square size-10 rounded-full text-2xl text-white"
+                  // 核心修复：直接通过 style 注入品牌色
                   style={{ background: item.color }}
                 >
-                <MotionButtonBase className="center flex aspect-square size-10 rounded-full bg-neutral-900/80 text-2xl text-white dark:bg-neutral-100/20">
                   <a
                     target="_blank"
                     href={item.url}
                     className="center flex"
-                    rel="noreferrer"
+                    rel="noreferrer noopener" // 安全实践
                     aria-label={item.icon}
                   >
                     <Icon />
