@@ -16,6 +16,7 @@ type SocialLink = {
   id: string
   url: string
   icon: string
+  color: string
 }
 
 const socialLinks: SocialLink[] = [
@@ -23,36 +24,43 @@ const socialLinks: SocialLink[] = [
     id: 'github',
     url: 'https://github.com/theLucius7',
     icon: 'Github',
+    color: '#181717',
   },
   {
     id: 'twitter',
     url: 'https://x.com/theLucius7',
     icon: 'X',
+    color: 'rgba(36,46,54,1.00)',
   },
   {
     id: 'telegram',
     url: 'https://t.me/theLucius7',
     icon: 'Telegram',
+    color: '#0088cc',
   },
   {
     id: 'mail',
     url: 'mailto:lucius7nya@gmail.com',
     icon: 'Mail',
+    color: '#D44638',
   },
   {
     id: 'bilibili',
     url: 'https://space.bilibili.com/1814052279',
     icon: 'Bilibili',
+    color: '#00A1D6',
   },
   {
     id: 'netease',
     url: 'https://music.163.com/#/user/home?id=1928692426',
     icon: 'Netease',
+    color: '#C20C0C',
   },
   {
     id: 'steam',
     url: 'https://steamcommunity.com/id/theLucius7/',
     icon: 'Steam',
+    color: '#0F1C30',
   },
 ]
 
@@ -91,6 +99,10 @@ export const Socials = ({
             <FloatPopover
               type="tooltip"
               triggerElement={
+                <MotionButtonBase
+                  className="center flex aspect-square size-10 rounded-full text-2xl text-white"
+                  style={{ background: item.color }}
+                >
                 <MotionButtonBase className="center flex aspect-square size-10 rounded-full bg-neutral-900/80 text-2xl text-white dark:bg-neutral-100/20">
                   <a
                     target="_blank"
