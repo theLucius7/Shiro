@@ -12,20 +12,16 @@ import {
   useEffect,
   useMemo,
 } from 'react'
-import {
-  FaChrome,
-  FaFirefox,
-  FaFolderOpen,
-  FaRegWindowMaximize,
-  FaSteam,
-  FaTelegram,
-} from 'react-icons/fa'
-import { RiQqFill, RiWechatFill } from 'react-icons/ri'
-import { SiSublimetext } from 'react-icons/si'
 
 import { setActivityMediaInfo, setActivityProcessInfo } from '~/atoms/activity'
 import { useActivity } from '~/atoms/hooks'
 import { ImpressionView } from '~/components/common/ImpressionTracker'
+import { SiGlyphGlobal } from '~/components/icons/comment'
+import { MdiFountainPenTip } from '~/components/icons/pen'
+import { GoogleBrandIcon } from '~/components/icons/platform/GoogleBrandIcon'
+import { CibMozilla } from '~/components/icons/platform/Moz'
+import { SteamIcon } from '~/components/icons/platform/SteamIcon'
+import { IcBaselineTelegram } from '~/components/icons/platform/Telegram'
 import { FloatPopover } from '~/components/ui/float-popover'
 import { softBouncePreset } from '~/constants/spring'
 import { TrackerAction } from '~/constants/tracker'
@@ -57,55 +53,55 @@ const getProcessConfig = (processName: string) => {
   if (normalized.includes('firefox')) {
     return {
       name: 'Firefox',
-      icon: <FaFirefox className="size-5" aria-hidden />,
+      icon: <CibMozilla className="size-5" aria-hidden />,
     }
   }
   if (normalized.includes('chrome')) {
     return {
       name: 'Google Chrome',
-      icon: <FaChrome className="size-5" aria-hidden />,
+      icon: <GoogleBrandIcon className="size-5" aria-hidden />,
     }
   }
   if (normalized.includes('sublime')) {
     return {
       name: 'Sublime Text',
-      icon: <SiSublimetext className="size-5" aria-hidden />,
+      icon: <MdiFountainPenTip className="size-5" aria-hidden />,
     }
   }
   if (normalized.includes('qq')) {
     return {
       name: 'QQ',
-      icon: <RiQqFill className="size-5" aria-hidden />,
+      icon: <SiGlyphGlobal className="size-5" aria-hidden />,
     }
   }
   if (normalized.includes('telegram')) {
     return {
       name: 'Telegram',
-      icon: <FaTelegram className="size-5" aria-hidden />,
+      icon: <IcBaselineTelegram className="size-5" aria-hidden />,
     }
   }
   if (normalized.includes('steam')) {
     return {
       name: 'Steam',
-      icon: <FaSteam className="size-5" aria-hidden />,
+      icon: <SteamIcon className="size-5" aria-hidden />,
     }
   }
   if (normalized.includes('explorer')) {
     return {
       name: 'Explorer',
-      icon: <FaFolderOpen className="size-5" aria-hidden />,
+      icon: <SiGlyphGlobal className="size-5" aria-hidden />,
     }
   }
   if (normalized.includes('weixin') || normalized.includes('wechat')) {
     return {
       name: 'WeChat',
-      icon: <RiWechatFill className="size-5" aria-hidden />,
+      icon: <SiGlyphGlobal className="size-5" aria-hidden />,
     }
   }
 
   return {
     name: processName,
-    icon: <FaRegWindowMaximize className="size-5" aria-hidden />,
+    icon: <SiGlyphGlobal className="size-5" aria-hidden />,
   }
 }
 export const Activity = () => {
