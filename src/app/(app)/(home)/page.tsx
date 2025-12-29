@@ -18,7 +18,7 @@ import {
   MdiLightbulbOn20,
   RMixPlanet,
 } from '~/components/icons/menu-collection'
-import { isSupportIcon, SocialIcon } from '~/components/modules/home/SocialIcon'
+import { Socials } from '~/components/layout/Socials'
 import { usePresentSubscribeModal } from '~/components/modules/subscribe'
 import { StyledButton } from '~/components/ui/button'
 import { NumberSmoothTransition } from '~/components/ui/number-transition/NumberSmoothTransition'
@@ -28,7 +28,6 @@ import {
 } from '~/components/ui/transition'
 import { microReboundPreset, softBouncePreset } from '~/constants/spring'
 import { clsxm } from '~/lib/helper'
-import { noopObj } from '~/lib/noop'
 import { apiClient } from '~/lib/request'
 import { toast } from '~/lib/toast'
 import {
@@ -96,7 +95,7 @@ const Hero = () => {
     }
   })!
   const siteOwner = useAggregationSelector((agg) => agg.user)
-  const { avatar, socialIds } = siteOwner || {}
+  const { avatar } = siteOwner || {}
 
   const titleAnimateD =
     title.template.reduce((acc, cur) => {
@@ -142,23 +141,10 @@ const Hero = () => {
             <span className="opacity-80">{description}</span>
           </BottomToUpTransitionView>
 
-          <ul className="center mx-[60px] mt-8 flex flex-wrap gap-6 lg:mx-auto lg:mt-28 lg:justify-start lg:gap-4">
-            {Object.entries(socialIds || noopObj).map(
-              ([type, id]: any, index) => {
-                if (!isSupportIcon(type)) return null
-                return (
-                  <BottomToUpTransitionView
-                    key={type}
-                    delay={index * 100 + titleAnimateD + 500}
-                    className="inline-block"
-                    as="li"
-                  >
-                    <SocialIcon id={id} type={type} />
-                  </BottomToUpTransitionView>
-                )
-              },
-            )}
-          </ul>
+          <Socials
+            className="center mx-[60px] mt-8 flex flex-wrap gap-6 lg:mx-auto lg:mt-28 lg:justify-start lg:gap-4"
+            transitionDelayStart={titleAnimateD + 500}
+          />
         </>
 
         <div
