@@ -12,6 +12,16 @@ import {
   useEffect,
   useMemo,
 } from 'react'
+import {
+  FaChrome,
+  FaFirefox,
+  FaFolderOpen,
+  FaRegWindowMaximize,
+  FaSteam,
+  FaTelegram,
+} from 'react-icons/fa'
+import { RiQqFill, RiWechatFill } from 'react-icons/ri'
+import { SiSublimetext } from 'react-icons/si'
 
 import { setActivityMediaInfo, setActivityProcessInfo } from '~/atoms/activity'
 import { useActivity } from '~/atoms/hooks'
@@ -39,6 +49,65 @@ const fetchJsonData = () =>
     fetch(`${CND_DOMAIN}/app-icon.json`).then((res) => res.json() as object),
     fetch(`${CND_DOMAIN}/app-desc.json`).then((res) => res.json() as object),
   ])
+
+const getProcessConfig = (processName: string) => {
+  const normalized = processName.trim().toLowerCase()
+  if (!normalized) return null
+
+  if (normalized.includes('firefox')) {
+    return {
+      name: 'Firefox',
+      icon: <FaFirefox className="size-5" aria-hidden />,
+    }
+  }
+  if (normalized.includes('chrome')) {
+    return {
+      name: 'Google Chrome',
+      icon: <FaChrome className="size-5" aria-hidden />,
+    }
+  }
+  if (normalized.includes('sublime')) {
+    return {
+      name: 'Sublime Text',
+      icon: <SiSublimetext className="size-5" aria-hidden />,
+    }
+  }
+  if (normalized.includes('qq')) {
+    return {
+      name: 'QQ',
+      icon: <RiQqFill className="size-5" aria-hidden />,
+    }
+  }
+  if (normalized.includes('telegram')) {
+    return {
+      name: 'Telegram',
+      icon: <FaTelegram className="size-5" aria-hidden />,
+    }
+  }
+  if (normalized.includes('steam')) {
+    return {
+      name: 'Steam',
+      icon: <FaSteam className="size-5" aria-hidden />,
+    }
+  }
+  if (normalized.includes('explorer')) {
+    return {
+      name: 'Explorer',
+      icon: <FaFolderOpen className="size-5" aria-hidden />,
+    }
+  }
+  if (normalized.includes('weixin') || normalized.includes('wechat')) {
+    return {
+      name: 'WeChat',
+      icon: <RiWechatFill className="size-5" aria-hidden />,
+    }
+  }
+
+  return {
+    name: processName,
+    icon: <FaRegWindowMaximize className="size-5" aria-hidden />,
+  }
+}
 export const Activity = () => {
   const shouldShowMeta = useHeaderMetaShouldShow()
 
@@ -46,13 +115,17 @@ export const Activity = () => {
     queryKey: ['app-icon', 'app-desc'],
     queryFn: fetchJsonData,
   })
+  const contextValue = useMemo(() => {
+    if (!data) return null
+    const [appLabels, appDescription] = data
+    return { appIcon: appLabels, appDescription }
+  }, [data])
+
   if (!data) return null
   if (shouldShowMeta) return null
-  const [appLabels, appDescription] = data
+  if (!contextValue) return null
   return (
-    <ActivityIconContext.Provider
-      value={{ appIcon: appLabels, appDescription }}
-    >
+    <ActivityIconContext.Provider value={contextValue}>
       <ActivityIcon />
     </ActivityIconContext.Provider>
   )
@@ -71,7 +144,7 @@ const ActivityIcon = memo(() => {
     queryFn: async () =>
       await apiClient
         .proxy(endpoint)
-        .post<{
+        .get<{
           processName: string
           processInfo?: {
             name: string
@@ -108,11 +181,17 @@ const ActivityIcon = memo(() => {
     } else {
       setActivityMediaInfo(null)
     }
+    const processInfo =
+      typeof data.processInfo === 'string' ? undefined : data.processInfo
+    const processName =
+      typeof data.processInfo === 'string'
+        ? data.processInfo
+        : data.processInfo?.name || data.processName
     setActivityProcessInfo({
-      name: data.processInfo?.name || data.processName,
-      iconUrl: data.processInfo?.iconUrl,
-      iconBase64: data.processInfo?.iconBase64,
-      description: data.processInfo?.description,
+      name: processName,
+      iconUrl: processInfo?.iconUrl,
+      iconBase64: processInfo?.iconBase64,
+      description: processInfo?.description,
     })
   }, [data])
 
@@ -122,14 +201,23 @@ const ActivityIcon = memo(() => {
   const deferredProcess = useDeferredValue(process)
   const processName = deferredProcess?.name || ''
   const processIcon = deferredProcess?.iconBase64 || deferredProcess?.iconUrl
+  const processConfig = useMemo(
+    () => getProcessConfig(processName),
+    [processName],
+  )
+  const displayProcessName = processConfig?.name || processName
 
   const { appDescription } = useContext(ActivityIconContext)
   const renderDescription =
     deferredProcess?.description || appDescription[deferredProcess?.name || '']
 
   const memoProcessName = useMemo(
-    () => ({ processName: processName || '', icon: processIcon }),
-    [processIcon, processName],
+    () => ({
+      processName: processName || '',
+      icon: processIcon,
+      iconElement: processConfig?.icon,
+    }),
+    [processConfig?.icon, processIcon, processName],
   )
 
   return (
@@ -181,8 +269,9 @@ const ActivityIcon = memo(() => {
                   trackerMessage="Activity"
                 >
                   <span className="whitespace-pre-line">
-                    {ownerName} 正在使用 {processName}
-                    {renderDescription ? ` ${renderDescription}` : ''}
+                    {`${ownerName} 正在使用 ${displayProcessName}${
+                      renderDescription ? ` ${renderDescription}` : ''
+                    }`}
                   </span>
                 </ImpressionView>
               </FloatPopover>
@@ -200,9 +289,19 @@ const ErrorFallback = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAM
 const TriggerComponent = memo<{
   processName: string
   icon?: string
-}>(({ processName, icon }) => {
+  iconElement?: React.ReactNode
+}>(({ processName, icon, iconElement }) => {
   const { appIcon } = useContext(ActivityIconContext)
   const isBuiltIn = !!appIcon[processName]
+  const [error, setError] = React.useState(false)
+
+  if (iconElement) {
+    return (
+      <span className="grid size-6 place-items-center text-neutral-700 dark:text-neutral-200">
+        {iconElement}
+      </span>
+    )
+  }
 
   const src =
     !isBuiltIn && icon
@@ -214,7 +313,6 @@ const TriggerComponent = memo<{
   const className = clsx('pointer-events-none select-none', {
     'rounded-md': !isBuiltIn,
   })
-  const [error, setError] = React.useState(false)
 
   if (!src) return null
 

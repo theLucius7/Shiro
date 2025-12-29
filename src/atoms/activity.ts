@@ -28,6 +28,35 @@ export const setActivityProcessInfo = (process: Activity['process'] | null) =>
 export const setActivityMediaInfo = (media: Activity['media']) =>
   jotaiStore.set(activityAtom, (prev) => ({ ...prev, media }))
 
+type ActivityProcessPayload = {
+  processInfo?: Activity['process']
+  process?: string
+} | null
+
+export const setActivityProcessInfoFromPayload = (
+  payload: ActivityProcessPayload,
+) => {
+  if (!payload) {
+    setActivityProcessInfo(null)
+    return
+  }
+
+  const { processInfo, process } = payload
+  const processName = processInfo?.name ?? process
+
+  if (!processName) {
+    setActivityProcessInfo(null)
+    return
+  }
+
+  setActivityProcessInfo({
+    name: processName,
+    iconBase64: processInfo?.iconBase64,
+    iconUrl: processInfo?.iconUrl,
+    description: processInfo?.description,
+  })
+}
+
 /////////
 
 export const activityPresenceAtom = atom({} as Record<string, ActivityPresence>)
