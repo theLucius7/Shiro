@@ -103,6 +103,7 @@ export const Socials = ({
                   className="center flex aspect-square size-10 rounded-full text-2xl text-white"
                   style={{ background: item.color }}
                 >
+                <MotionButtonBase className="center flex aspect-square size-10 rounded-full bg-neutral-900/80 text-2xl text-white dark:bg-neutral-100/20">
                   <a
                     target="_blank"
                     href={item.url}
