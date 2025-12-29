@@ -9,6 +9,7 @@ type Activity = {
     name: string
     iconBase64?: string
     iconUrl?: string
+    iconEmoji?: string
     description?: string
   } | null
   media: {

@@ -33,6 +33,46 @@ const ActivityIconContext = createContext<{
   appDescription: any
 }>(null!)
 
+const PROCESS_MAP: Record<string, { name: string; icon: string }> = {
+  firefox: { name: 'Firefox', icon: '🦊' },
+  chrome: { name: 'Google Chrome', icon: '🌏' },
+  sublime_text: { name: 'Sublime Text', icon: '📝' },
+  qq: { name: 'QQ', icon: '🐧' },
+  telegram: { name: 'Telegram', icon: '✈️' },
+  steamwebhelper: { name: 'Steam', icon: '🎮' },
+  explorer: { name: 'Windows Explorer', icon: '📁' },
+  weixin: { name: 'WeChat', icon: '💬' },
+  default: { name: 'Unknow App', icon: '📦' },
+}
+
+type ProcessInfoPayload = {
+  name: string
+  iconBase64?: string
+  iconUrl?: string
+  iconEmoji?: string
+  description?: string
+}
+
+const normalizeProcessInfo = (
+  processName: string,
+  processInfo?: ProcessInfoPayload | string,
+): ProcessInfoPayload | null => {
+  if (processInfo && typeof processInfo === 'object') {
+    return processInfo
+  }
+
+  const rawName = typeof processInfo === 'string' ? processInfo : processName
+  if (!rawName) return null
+
+  const key = rawName.toLowerCase()
+  const mapped = PROCESS_MAP[key] ?? PROCESS_MAP.default
+
+  return {
+    name: mapped.name,
+    iconEmoji: mapped.icon,
+  }
+}
+
 const CND_DOMAIN = 'https://fastly.jsdelivr.net/gh/Innei/reporter-assets@main'
 const fetchJsonData = () =>
   Promise.all([
@@ -73,12 +113,7 @@ const ActivityIcon = memo(() => {
         .proxy(endpoint)
         .get<{
           processName: string
-          processInfo?: {
-            name: string
-            iconBase64?: string
-            iconUrl?: string
-            description?: string
-          }
+          processInfo?: ProcessInfoPayload | string
           mediaInfo?: {
             title: string
             artist: string
@@ -108,12 +143,9 @@ const ActivityIcon = memo(() => {
     } else {
       setActivityMediaInfo(null)
     }
-    setActivityProcessInfo({
-      name: data.processInfo?.name || data.processName,
-      iconUrl: data.processInfo?.iconUrl,
-      iconBase64: data.processInfo?.iconBase64,
-      description: data.processInfo?.description,
-    })
+    setActivityProcessInfo(
+      normalizeProcessInfo(data.processName, data.processInfo),
+    )
   }, [data])
 
   const ownerName = useAggregationSelector((data) => data.user.name)
@@ -122,14 +154,19 @@ const ActivityIcon = memo(() => {
   const deferredProcess = useDeferredValue(process)
   const processName = deferredProcess?.name || ''
   const processIcon = deferredProcess?.iconBase64 || deferredProcess?.iconUrl
+  const processIconEmoji = deferredProcess?.iconEmoji
 
   const { appDescription } = useContext(ActivityIconContext)
   const renderDescription =
     deferredProcess?.description || appDescription[deferredProcess?.name || '']
 
   const memoProcessName = useMemo(
-    () => ({ processName: processName || '', icon: processIcon }),
-    [processIcon, processName],
+    () => ({
+      processName: processName || '',
+      icon: processIcon,
+      iconEmoji: processIconEmoji,
+    }),
+    [processIcon, processIconEmoji, processName],
   )
 
   return (
@@ -200,7 +237,8 @@ const ErrorFallback = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAM
 const TriggerComponent = memo<{
   processName: string
   icon?: string
-}>(({ processName, icon }) => {
+  iconEmoji?: string
+}>(({ processName, icon, iconEmoji }) => {
   const { appIcon } = useContext(ActivityIconContext)
   const isBuiltIn = !!appIcon[processName]
 
@@ -214,7 +252,19 @@ const TriggerComponent = memo<{
   const className = clsx('pointer-events-none select-none', {
     'rounded-md': !isBuiltIn,
   })
+  const emojiClassName = clsx(
+    'pointer-events-none select-none text-xl leading-none',
+    { 'rounded-md': !isBuiltIn },
+  )
   const [error, setError] = React.useState(false)
+
+  if (!src && iconEmoji) {
+    return (
+      <span className={emojiClassName} role="img" aria-label={processName}>
+        {iconEmoji}
+      </span>
+    )
+  }
 
   if (!src) return null
 
