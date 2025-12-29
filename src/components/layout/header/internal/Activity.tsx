@@ -33,6 +33,57 @@ const ActivityIconContext = createContext<{
   appDescription: any
 }>(null!)
 
+type ActivityProcessInfo = {
+  name: string
+  iconBase64?: string
+  iconUrl?: string
+  description?: string
+}
+
+const PROCESS_MAP: Record<
+  string,
+  {
+    name: string
+    emoji: string
+  }
+> = {
+  firefox: { name: 'Firefox', emoji: '🦊' },
+  chrome: { name: 'Google Chrome', emoji: '🌏' },
+  sublime_text: { name: 'Sublime Text', emoji: '📝' },
+  qq: { name: 'QQ', emoji: '🐧' },
+  telegram: { name: 'Telegram', emoji: '✈️' },
+  steamwebhelper: { name: 'Steam', emoji: '🎮' },
+  explorer: { name: 'Windows Explorer', emoji: '📁' },
+  weixin: { name: 'WeChat', emoji: '💬' },
+}
+
+const DEFAULT_PROCESS = { name: 'Unknow App', emoji: '📦' }
+
+const emojiToDataUrl = (emoji: string) =>
+  `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="48">${emoji}</text></svg>`,
+  )}`
+
+const normalizeProcessInfo = (
+  processInfo?: ActivityProcessInfo | string,
+  processName?: string,
+) => {
+  if (processInfo && typeof processInfo === 'object') {
+    return processInfo
+  }
+
+  const rawName =
+    (typeof processInfo === 'string' ? processInfo : processName) ?? ''
+  if (!rawName) return null
+
+  const { name, emoji } = PROCESS_MAP[rawName.toLowerCase()] ?? DEFAULT_PROCESS
+
+  return {
+    name,
+    iconUrl: emojiToDataUrl(emoji),
+  }
+}
+
 const CND_DOMAIN = 'https://fastly.jsdelivr.net/gh/Innei/reporter-assets@main'
 const fetchJsonData = () =>
   Promise.all([
@@ -73,12 +124,7 @@ const ActivityIcon = memo(() => {
         .proxy(endpoint)
         .get<{
           processName: string
-          processInfo?: {
-            name: string
-            iconBase64?: string
-            iconUrl?: string
-            description?: string
-          }
+          processInfo?: ActivityProcessInfo | string
           mediaInfo?: {
             title: string
             artist: string
@@ -108,11 +154,15 @@ const ActivityIcon = memo(() => {
     } else {
       setActivityMediaInfo(null)
     }
+    const normalizedProcessInfo = normalizeProcessInfo(
+      data.processInfo,
+      data.processName,
+    )
     setActivityProcessInfo({
-      name: data.processInfo?.name || data.processName,
-      iconUrl: data.processInfo?.iconUrl,
-      iconBase64: data.processInfo?.iconBase64,
-      description: data.processInfo?.description,
+      name: normalizedProcessInfo?.name || data.processName,
+      iconUrl: normalizedProcessInfo?.iconUrl,
+      iconBase64: normalizedProcessInfo?.iconBase64,
+      description: normalizedProcessInfo?.description,
     })
   }, [data])
 
