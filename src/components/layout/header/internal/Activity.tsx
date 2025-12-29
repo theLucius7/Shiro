@@ -156,6 +156,19 @@ const ActivityIcon = memo(() => {
       await apiClient
         .proxy(endpoint)
         .get<ActivityResponse>()
+        .get<{
+          processName: string
+          processInfo?: {
+            name: string
+            iconBase64?: string
+            iconUrl?: string
+            description?: string
+          }
+          mediaInfo?: {
+            title: string
+            artist: string
+          }
+        }>()
         .then((res) => res)
         .catch(() => ({
           processName: '',
