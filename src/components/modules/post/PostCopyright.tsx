@@ -26,6 +26,5 @@ export const PostCopyright: FC = () => {
   )
   if (!data) return null
   const { title, link, date } = data
-  return (
-  )
+  return null
 }
