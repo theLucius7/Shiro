@@ -8,13 +8,17 @@ import { Form, FormInput as FInput } from '~/components/ui/form'
 import { useAggregationSelector } from '~/providers/root/aggregation-data-provider'
 
 import { CommentBoxActionBar } from './ActionBar'
-import { useGetCommentBoxAtomValues } from './hooks'
+import { useCommentCompact, useGetCommentBoxAtomValues } from './hooks'
 import { UniversalTextArea } from './UniversalTextArea'
 
-export const CommentBoxLegacyForm = () => {
+export const CommentBoxLegacyForm = ({
+  autoFocus,
+}: {
+  autoFocus?: boolean
+}) => {
   const isLogger = useIsLogged()
-  if (isLogger) return <LoggedForm />
-  return <FormWithUserInfo />
+  if (isLogger) return <LoggedForm autoFocus={autoFocus} />
+  return <FormWithUserInfo autoFocus={autoFocus} />
 }
 
 const taClassName =
@@ -57,7 +61,7 @@ const FormInput = (props: { fieldKey: FormKey; required?: boolean }) => {
     />
   )
 }
-const FormWithUserInfo = () => (
+const FormWithUserInfo = ({ autoFocus }: { autoFocus?: boolean }) => (
   <Form className="flex flex-col space-y-4 px-2 pt-2" showErrorMessage={false}>
     <div className="flex flex-col space-x-0 space-y-4 md:flex-row md:space-x-4 md:space-y-0">
       <FormInput fieldKey="author" required />
@@ -65,15 +69,36 @@ const FormWithUserInfo = () => (
       <FormInput fieldKey="url" />
     </div>
     <div className={taClassName}>
-      <UniversalTextArea className="pb-8" />
+      <UniversalTextArea autoFocus={autoFocus} className="pb-8" />
     </div>
 
     <CommentBoxActionBar className="absolute bottom-4 left-0 right-4 mb-2 ml-2 w-auto px-4" />
   </Form>
 )
 
-const LoggedForm = () => {
+const LoggedForm = ({ autoFocus }: { autoFocus?: boolean }) => {
   const user = useAggregationSelector((v) => v.user)!
+  const compact = useCommentCompact()
+
+  if (compact) {
+    return (
+      <div className="flex gap-2.5 py-1 pr-1">
+        <Image
+          className="mb-1 shrink-0 self-end rounded-full object-cover"
+          src={user.avatar}
+          alt={`${user.name || user.username}'s avatar`}
+          width={28}
+          height={28}
+        />
+        <div className="relative min-w-0 flex-1">
+          <div className="relative h-[88px] w-full rounded-xl bg-gray-100/80 dark:bg-zinc-900/60">
+            <UniversalTextArea autoFocus={autoFocus} className="pb-7" />
+          </div>
+          <CommentBoxActionBar className="absolute bottom-0 left-0 right-0 mb-1.5 w-auto px-3" />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex space-x-4">
@@ -94,7 +119,7 @@ const LoggedForm = () => {
         <UserAuthFromIcon className="absolute -bottom-1 right-0" />
       </div>
       <div className={taClassName}>
-        <UniversalTextArea className="pb-5" />
+        <UniversalTextArea autoFocus={autoFocus} className="pb-5" />
       </div>
 
       <CommentBoxActionBar className="absolute bottom-0 left-14 right-0 mb-2 ml-4 w-auto px-4" />

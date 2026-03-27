@@ -47,7 +47,7 @@ export const CommentReplyButton: FC<{
             {replyFormOpen && (
               <>
                 <div className="h-6" />
-                <CommentBoxRootLazy refId={commentId} />
+                <CommentBoxRootLazy autoFocus compact refId={commentId} />
                 <div className="h-6" />
               </>
             )}

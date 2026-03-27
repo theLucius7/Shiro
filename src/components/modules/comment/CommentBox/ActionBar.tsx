@@ -14,6 +14,7 @@ import {
   useCommentBoxHasText,
   useCommentBoxTextIsOversize,
   useCommentBoxTextValue,
+  useCommentCompact,
   useGetCommentBoxAtomValues,
   useSendComment,
   useSetCommentBoxValues,
@@ -28,7 +29,7 @@ const TextLengthIndicator = () => {
     <span
       className={clsx(
         'font-mono text-[10px]',
-        isTextOversize ? 'text-red-500' : 'text-zinc-500',
+        isTextOversize ? 'text-red-500' : 'text-neutral-500',
       )}
     >
       {commentValue.length}/{MAX_COMMENT_TEXT_LENGTH}
@@ -86,6 +87,7 @@ const SyncToRecentlyCheckbox = () => {
 
 export const CommentBoxActionBar: Component = ({ className }) => {
   const hasCommentText = useCommentBoxHasText()
+  const compact = useCommentCompact()
 
   return (
     <footer
@@ -94,17 +96,15 @@ export const CommentBoxActionBar: Component = ({ className }) => {
         className,
       )}
     >
-      <span
-        className={clsx(
-          'flex-1 select-none text-[10px] text-zinc-500 transition-opacity',
+      <span className="flex flex-1 items-center gap-4 select-none text-[10px] text-neutral-500 transition-opacity">
+        {!compact && (
+          <span className="hidden md:inline">
+            支持 <b>Markdown</b> 与{' '}
+            <MLink href="https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
+              GFM
+            </MLink>
+          </span>
         )}
-      >
-        <span className="hidden md:inline">
-          支持 <b>Markdown</b> 与{' '}
-          <MLink href="https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">
-            GFM
-          </MLink>
-        </span>
         <CommentBoxSlotProvider />
       </span>
       <AnimatePresence>
@@ -133,13 +133,13 @@ const SubmitButton = () => {
   return (
     <m.button
       className="flex appearance-none items-center space-x-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+      disabled={isPending}
+      type="button"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      type="button"
-      disabled={isPending}
       onClick={onClickSend}
     >
-      <TiltedSendIcon className="size-5 text-zinc-800 dark:text-zinc-200" />
+      <TiltedSendIcon className="size-5 text-neutral-900 dark:text-neutral-100" />
       <m.span className="text-sm" layout="size">
         {isPending ? '送信...' : '送信'}
       </m.span>

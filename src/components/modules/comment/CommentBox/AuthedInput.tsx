@@ -9,11 +9,16 @@ import { UserAuthFromIcon } from '~/components/layout/header/internal/UserAuthFr
 import { getUserUrl } from '~/lib/authjs'
 
 import { CommentBoxActionBar } from './ActionBar'
-import { useSetCommentBoxValues } from './hooks'
+import { useCommentCompact, useSetCommentBoxValues } from './hooks'
 import { UniversalTextArea } from './UniversalTextArea'
 
-export const CommentBoxAuthedInput = () => {
+export const CommentBoxAuthedInput = ({
+  autoFocus,
+}: {
+  autoFocus?: boolean
+}) => {
   const setter = useSetCommentBoxValues()
+  const compact = useCommentCompact()
 
   const reader = useSessionReader()
 
@@ -37,6 +42,34 @@ export const CommentBoxAuthedInput = () => {
   }, [displayName, reader, setter])
 
   if (!reader) return null
+
+  if (compact) {
+    return (
+      <div className="flex gap-2.5">
+        <div className="mb-1 shrink-0 self-end">
+          <Avatar.Root>
+            <Avatar.Image
+              className="rounded-full object-cover"
+              src={reader.image}
+              alt={`${displayName}'s avatar`}
+              width={28}
+              height={28}
+            />
+            <Avatar.Fallback
+              delayMs={600}
+              className="block size-7 shrink-0 rounded-full"
+            />
+          </Avatar.Root>
+        </div>
+        <div className="relative min-w-0 flex-1">
+          <div className="relative h-[88px] w-full rounded-lg bg-gray-100/80 dark:bg-zinc-900/60">
+            <UniversalTextArea autoFocus={autoFocus} className="pb-7" />
+          </div>
+          <CommentBoxActionBar className="absolute bottom-0 left-0 right-0 mb-1.5 w-auto px-3" />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex space-x-4">
@@ -64,7 +97,7 @@ export const CommentBoxAuthedInput = () => {
         <UserAuthFromIcon className="absolute -bottom-1 right-0" />
       </div>
       <div className="relative h-[150px] w-full rounded-xl bg-gray-200/50 dark:bg-zinc-800/50">
-        <UniversalTextArea className="pb-5" />
+        <UniversalTextArea autoFocus={autoFocus} className="pb-5" />
       </div>
 
       <CommentBoxActionBar className="absolute bottom-0 left-14 right-0 mb-2 ml-4 w-auto px-4" />

@@ -21,7 +21,10 @@ import { CommentBoxSlotPortal } from './providers'
 const EmojiPicker = dynamic(() =>
   import('../../shared/EmojiPicker').then((mod) => mod.EmojiPicker),
 )
-export const UniversalTextArea: Component = ({ className }) => {
+export const UniversalTextArea: Component<{ autoFocus?: boolean }> = ({
+  className,
+  autoFocus,
+}) => {
   const placeholder = useRefValue(() => getRandomPlaceholder())
   const setter = useSetCommentBoxValues()
   const value = useCommentBoxTextValue()
@@ -90,24 +93,28 @@ export const UniversalTextArea: Component = ({ className }) => {
   }, [value])
 
   useIsomorphicLayoutEffect(() => {
-    if (location.hash !== '#comment') {
+    const $ta = taRef.current
+    if (!$ta) return
+
+    const shouldAutoFocusByHash = location.hash === '#comment'
+    if (!autoFocus && !shouldAutoFocusByHash) {
       return
     }
 
-    // autofocus
-    const $ta = taRef.current
-    if (!$ta) return
     $ta.selectionStart = $ta.selectionEnd = $ta.value.length
     $ta.focus()
 
-    $ta.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }, [])
+    if (shouldAutoFocusByHash) {
+      $ta.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [autoFocus])
 
   const [sendComment] = useSendComment()
   const isMobile = useIsMobile()
   return (
     <TextArea
       bordered={false}
+      autoFocus={autoFocus}
       wrapperClassName={className}
       ref={taRef}
       defaultValue={value}

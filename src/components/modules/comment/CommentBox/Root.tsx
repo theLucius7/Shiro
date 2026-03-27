@@ -12,12 +12,13 @@ import type { CommentBaseProps } from '../types'
 import { CommentBoxAuthedInput } from './AuthedInput'
 import { CommentBoxLegacyForm } from './CommentBoxLegacyForm'
 import { CommentBoxMode, setCommentMode, useCommentMode } from './hooks'
-import { CommentBoxProvider } from './providers'
+import { CommentBoxProvider, CommentCompactContext } from './providers'
 import { CommentBoxSignedOutContent } from './SignedOutContent'
 import { SwitchCommentMode } from './SwitchCommentMode'
 
 export const CommentBoxRoot: Component<CommentBaseProps> = (props) => {
-  const { refId, className, afterSubmit, initialValue } = props
+  const { refId, className, afterSubmit, initialValue, autoFocus, compact } =
+    props
 
   const mode = useCommentMode()
 
@@ -33,39 +34,41 @@ export const CommentBoxRoot: Component<CommentBaseProps> = (props) => {
 
   return (
     <ErrorBoundary>
-      <CommentBoxProvider
-        refId={refId}
-        afterSubmit={afterSubmit}
-        initialValue={initialValue}
-      >
-        <div
-          className={clsxm('group relative w-full min-w-0', className)}
-          data-hide-print
+      <CommentCompactContext.Provider value={!!compact}>
+        <CommentBoxProvider
+          refId={refId}
+          afterSubmit={afterSubmit}
+          initialValue={initialValue}
         >
-          <SwitchCommentMode />
+          <div
+            className={clsxm('group relative w-full min-w-0', className)}
+            data-hide-print
+          >
+            {!compact && <SwitchCommentMode />}
 
-          <div className="relative w-full">
-            {isLogged ? (
-              <CommentBoxLegacy />
-            ) : mode === CommentBoxMode.legacy ? (
-              <CommentBoxLegacy />
-            ) : (
-              <CommentBoxWithAuth />
-            )}
+            <div className="relative w-full">
+              {isLogged ? (
+                <CommentBoxLegacy autoFocus={autoFocus} />
+              ) : mode === CommentBoxMode.legacy ? (
+                <CommentBoxLegacy autoFocus={autoFocus} />
+              ) : (
+                <CommentBoxWithAuth autoFocus={autoFocus} />
+              )}
+            </div>
           </div>
-        </div>
-      </CommentBoxProvider>
+        </CommentBoxProvider>
+      </CommentCompactContext.Provider>
     </ErrorBoundary>
   )
 }
 
-const CommentBoxLegacy = () => (
+const CommentBoxLegacy = ({ autoFocus }: { autoFocus?: boolean }) => (
   <AutoResizeHeight>
-    <CommentBoxLegacyForm />
+    <CommentBoxLegacyForm autoFocus={autoFocus} />
   </AutoResizeHeight>
 )
 
-const CommentBoxWithAuth = () => {
+const CommentBoxWithAuth = ({ autoFocus }: { autoFocus?: boolean }) => {
   const isReaderLogin = !!useSessionReader()
 
   return (
@@ -73,7 +76,7 @@ const CommentBoxWithAuth = () => {
       {!isReaderLogin ? (
         <CommentBoxSignedOutContent />
       ) : (
-        <CommentBoxAuthedInput />
+        <CommentBoxAuthedInput autoFocus={autoFocus} />
       )}
     </AutoResizeHeight>
   )

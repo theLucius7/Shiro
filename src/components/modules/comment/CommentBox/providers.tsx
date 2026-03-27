@@ -38,6 +38,8 @@ export const CommentBoxLifeCycleContext = createContext<{
   afterSubmit?: () => void
 }>(null!)
 
+export const CommentCompactContext = createContext(false)
+
 export const CommentBoxProvider = (
   props: PropsWithChildren & {
     refId: string

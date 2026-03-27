@@ -27,11 +27,13 @@ import type { createInitialValue } from './providers'
 import {
   CommentBoxContext,
   CommentBoxLifeCycleContext,
+  CommentCompactContext,
   CommentCompletedCallbackContext,
   CommentIsReplyContext,
   CommentOriginalRefIdContext,
 } from './providers'
 
+export const useCommentCompact = () => useContext(CommentCompactContext)
 export const useUseCommentReply = () => useContext(CommentIsReplyContext)
 
 export const useCommentOriginalRefId = () => {

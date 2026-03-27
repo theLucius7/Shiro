@@ -24,6 +24,7 @@ export const CommentModal: ModalContentComponent<CommentModalProps> = (
       </span>
 
       <CommentBoxRoot
+        autoFocus
         initialValue={initialValue}
         className="mb-12 mt-6"
         refId={refId}
