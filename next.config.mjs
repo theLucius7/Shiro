@@ -65,6 +65,21 @@ let nextConfig = {
       "default-src 'self'; script-src 'none'; sandbox; style-src 'unsafe-inline';",
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/notes/topics',
+        destination: '/notes/series',
+        permanent: true,
+      },
+      {
+        source: '/notes/topics/:slug',
+        destination: '/notes/series/:slug',
+        permanent: true,
+      },
+    ]
+  },
+
   async rewrites() {
     return {
       beforeFiles: [
