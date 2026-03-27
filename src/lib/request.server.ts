@@ -74,18 +74,21 @@ export const definePrerenderPage =
           ...searchParams,
         })
 
-        return await Component({
-          data,
-          ...props,
-          params,
-          searchParams,
-          children: props.children,
-        })
+        return createElement(
+          Component as any,
+          {
+            data,
+            ...props,
+            params,
+            searchParams,
+          },
+          props.children,
+        )
       } catch (error: any) {
         // 如果在内部已经处理了 NEXT_NOT_FOUND，就不再处理
-
-        if (error?.message === 'NEXT_NOT_FOUND') {
-          notFound()
+        // @see next/packages/next/src/client/components/http-access-fallback/http-access-fallback.ts
+        if (error?.message === 'NEXT_HTTP_ERROR_FALLBACK;404') {
+          throw error
         }
 
         if (error instanceof RequestError) {
