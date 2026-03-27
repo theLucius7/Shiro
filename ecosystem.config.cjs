@@ -5,7 +5,7 @@ module.exports = {
     {
       name: 'Shiro',
       cwd: __dirname,
-      script: '.next/standalone/server.js',
+      script: './scripts/start-selfhosted-standalone.cjs',
       instances: 1,
       autorestart: true,
       watch: false,

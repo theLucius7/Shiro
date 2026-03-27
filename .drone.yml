@@ -1,13 +1,12 @@
+# demo.lucius7.dev uses this self-hosted pipeline for debugging.
+# blog.lucius7.dev is deployed separately by Vercel from the Git repository.
 kind: pipeline
-name: build-and-package
+name: demo-build-and-package
 platform:
   os: linux
   arch: amd64
 
 volumes:
-  - name: shiro
-    host:
-      path: /drone/tmp/shiro
   - name: shiro-dist
     host:
       path: /drone/tmp/shiro-dist
@@ -18,9 +17,6 @@ volumes:
   - name: node_modules_cache
     host:
       path: /drone/tmp/cache
-  - name: cache
-    host:
-      path: /drone/tmp/shiro_next_cache
 
 steps:
   - name: restore-cache
@@ -48,8 +44,6 @@ steps:
     volumes:
       - name: shiro-env
         path: /drone/src/.env
-      - name: cache
-        path: /drone/src/.next
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
@@ -67,16 +61,16 @@ steps:
   - name: package
     image: node:20-alpine
     commands:
-      - 'pwd'
-      - 'ls -a'
-      - 'ls .next'
       - 'apk add zip'
       - 'sh ./standalone-bundle.sh'
+      - 'find .next/standalone/.next/static/css -maxdepth 1 -type f | head -n 5'
+      - 'find .next/_next/static/css -maxdepth 1 -type f | head -n 5'
+      - 'test -n "$(find .next/standalone/.next/static/css -maxdepth 1 -type f -name "*.css" -print -quit)"'
+      - 'test -n "$(find .next/_next/static/css -maxdepth 1 -type f -name "*.css" -print -quit)"'
+      - 'test -n "$(find .next/standalone/.next/static/chunks/app -type f -name "*.js" -print -quit)"'
     volumes:
       - name: shiro-dist
         path: /drone/src/assets
-      - name: cache
-        path: /drone/src/.next
 
     depends_on:
       - build
@@ -89,7 +83,7 @@ trigger:
       - push
 ---
 kind: pipeline
-name: deploy
+name: demo-deploy
 platform:
   os: linux
   arch: amd64
@@ -131,11 +125,12 @@ steps:
         from_secret: ssh_key
       port: 22
       script:
-        - '\npm install --os=linux --cpu=x64 sharp --registry=https://registry.npmmirror.com'
+        - 'npm install --os=linux --cpu=x64 sharp --registry=https://registry.npmmirror.com'
         - cd ~/shiro
+        - rm -rf _next
+        - rm -rf standalone
         - unzip -o release.zip
         - rm release.zip
-        - ls
         - cd standalone
         - cp -r ~/node_modules/sharp ./node_modules
         - ~/.n/bin/pm2 restart ecosystem.config.js
@@ -144,7 +139,7 @@ steps:
       - transfer file
 
 depends_on:
-  - build-and-package
+  - demo-build-and-package
 trigger:
   branch:
     - main

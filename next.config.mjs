@@ -12,6 +12,7 @@ process.title = 'Shiro (NextJS)'
 
 const env = config().parsed || {}
 const isProd = process.env.NODE_ENV === 'production'
+const isVercel = Boolean(process.env.VERCEL)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -41,8 +42,12 @@ let nextConfig = {
   },
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
-  output: 'standalone',
-  outputFileTracingRoot: __dirname,
+  ...(isVercel
+    ? {}
+    : {
+        output: 'standalone',
+        outputFileTracingRoot: __dirname,
+      }),
   assetPrefix: isProd ? env.ASSETPREFIX || undefined : undefined,
   compiler: {
     // reactRemoveProperties: { properties: ['^data-id$', '^data-(\\w+)-id$'] },
