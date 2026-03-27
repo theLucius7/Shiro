@@ -1,6 +1,6 @@
 'use client'
 
-import dayjs from 'dayjs'
+import { differenceInDays } from 'date-fns'
 
 import { Banner } from '~/components/ui/banner'
 import { RelativeTime } from '~/components/ui/relative-time'
@@ -11,7 +11,7 @@ export const PostOutdate = () => {
   if (!time) {
     return null
   }
-  return dayjs().diff(dayjs(time), 'day') > 60 ? (
+  return differenceInDays(new Date(), new Date(time)) > 60 ? (
     <Banner type="warning" className="my-10">
       <span className="leading-[1.8]">
         这篇文章上次修改于 <RelativeTime date={time} />

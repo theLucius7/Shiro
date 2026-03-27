@@ -1,6 +1,6 @@
 'use client'
 
-import dayjs from 'dayjs'
+import { isAfter } from 'date-fns'
 import { useEffect, useMemo } from 'react'
 
 import { useIsLogged } from '~/atoms/hooks'
@@ -12,7 +12,9 @@ export const NoteHideIfSecret: Component = ({ children }) => {
 
   const noteId = useCurrentNoteDataSelector((data) => data?.data.nid)
   const secretDate = useMemo(() => new Date(noteSecret!), [noteSecret])
-  const isSecret = noteSecret ? dayjs(noteSecret).isAfter(new Date()) : false
+  const isSecret = noteSecret
+    ? isAfter(new Date(noteSecret), new Date())
+    : false
 
   const isLogged = useIsLogged()
 
