@@ -16,9 +16,20 @@ export const ActivityRecent = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['home-activity-recent'],
     queryFn: async () => {
-      return (await apiClient.activity.getRecentActivities()).$serialized
+      const payload = (await apiClient.activity.getRecentActivities())
+        .$serialized as unknown
+
+      if (!payload || Array.isArray(payload) || typeof payload !== 'object') {
+        return null
+      }
+      if ('ok' in payload && (payload as { ok?: number }).ok === 0) {
+        return null
+      }
+
+      return payload as Record<string, unknown>
     },
     refetchOnMount: true,
+    retry: false,
     meta: {
       persist: true,
     },
@@ -69,7 +80,7 @@ export const ActivityRecent = () => {
             })}
           </ul>
         </div>
-      ) : (
+      ) : flatData.length > 0 ? (
         <ScrollArea.ScrollArea rootClassName="h-[400px] relative max-h-[80vh]">
           <ul className="shiro-timeline mt-4 flex flex-col pb-8 pl-2">
             {flatData.map((activity) => {
@@ -84,6 +95,10 @@ export const ActivityRecent = () => {
             })}
           </ul>
         </ScrollArea.ScrollArea>
+      ) : (
+        <div className="center flex h-[400px] max-h-[80vh] flex-col text-sm text-zinc-500 dark:text-zinc-400">
+          暂时还没有可展示的动态
+        </div>
       )}
     </m.div>
   )

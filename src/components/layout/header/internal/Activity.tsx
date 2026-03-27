@@ -166,7 +166,8 @@ const ActivityIcon = memo(() => {
     })
   }, [data])
 
-  const ownerName = useAggregationSelector((data) => data.user.name)
+  const ownerName =
+    useAggregationSelector((data) => data.user?.name) || '站长'
 
   const { process, media } = activity
   const deferredProcess = useDeferredValue(process)

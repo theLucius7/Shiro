@@ -11,7 +11,9 @@ import {
 } from '~/providers/root/aggregation-data-provider'
 
 export const SiteOwnerAvatar: Component = ({ className }) => {
-  const avatar = useAggregationSelector((data) => data.user.avatar)
+  const avatar =
+    useAggregationSelector((data) => data.user?.avatar) ||
+    '/apple-touch-icon.png'
   const liveId = useAppConfigSelector(
     (config) => config.module?.bilibili?.liveId,
   )
@@ -34,7 +36,6 @@ export const SiteOwnerAvatar: Component = ({ className }) => {
     },
   })
 
-  if (!avatar) return
   return (
     <div
       role={isLiving ? 'button' : 'img'}

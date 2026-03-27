@@ -22,6 +22,7 @@ export const iconClassName =
 
 export const ActivityCard = ({ activity }: { activity: ReactActivityType }) => {
   const siteOwner = useAggregationSelector((state) => state.user)
+  const siteOwnerAvatar = siteOwner?.avatar || '/apple-touch-icon.png'
   const Content = useMemo(() => {
     switch (activity.bizType) {
       case 'comment': {
@@ -133,7 +134,7 @@ export const ActivityCard = ({ activity }: { activity: ReactActivityType }) => {
 
             <div className="flex gap-2 pl-8">
               <img
-                src={siteOwner?.avatar}
+                src={siteOwnerAvatar}
                 className="mt-4 hidden size-6 rounded-full lg:inline"
               />
               <div
@@ -184,7 +185,7 @@ export const ActivityCard = ({ activity }: { activity: ReactActivityType }) => {
         )
       }
     }
-  }, [activity, siteOwner?.avatar])
+  }, [activity, siteOwnerAvatar])
 
   return <div className="pb-4 text-base">{Content}</div>
 }

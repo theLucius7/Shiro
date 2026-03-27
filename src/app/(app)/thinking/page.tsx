@@ -139,7 +139,9 @@ const List = () => {
     initialPageParam: undefined as undefined | string,
   })
 
-  const owner = useAggregationSelector((a) => a.user)!
+  const owner = useAggregationSelector((a) => a.user)
+  const ownerAvatar = owner?.avatar || '/apple-touch-icon.png'
+  const ownerName = owner?.name || 'Lucius7'
 
   const handleUp = (id: string) => {
     apiClient.recently
@@ -213,13 +215,13 @@ const List = () => {
             >
               <div className="translate-y-6">
                 <img
-                  src={owner.avatar}
+                  src={ownerAvatar}
                   className="size-[40px] rounded-full ring-2 ring-slate-200 dark:ring-zinc-800"
                 />
               </div>
               <div className="min-w-0 max-w-full">
                 <div className="flex items-center space-x-2">
-                  <span className="text-lg font-medium">{owner.name}</span>
+                  <span className="text-lg font-medium">{ownerName}</span>
 
                   <span className="text-xs opacity-80">
                     <RelativeTime date={item.created} />

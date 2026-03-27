@@ -29,7 +29,8 @@ import { HeaderActionButton } from './HeaderActionButton'
 import { UserAuthFromIcon } from './UserAuthFromIcon'
 
 const OwnerAvatar = () => {
-  const ownerAvatar = useAggregationSelector((s) => s.user.avatar)!
+  const ownerAvatar =
+    useAggregationSelector((s) => s.user?.avatar) || '/apple-touch-icon.png'
 
   return (
     <div className="pointer-events-auto relative flex items-center justify-center">

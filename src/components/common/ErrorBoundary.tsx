@@ -9,11 +9,7 @@ import { StyledButton } from '../ui/button'
 const FallbackComponent = () => {
   return (
     <div className="center flex w-full flex-col py-6">
-      Something went wrong. Please contract to{' '}
-      <a href="mailto:i@innei.in" className="shiro-link--underline">
-        i@innei.in
-      </a>
-      .
+      页面组件加载失败，请刷新后重试。
       <StyledButton
         onClick={() => {
           window.location.reload()

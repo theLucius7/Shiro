@@ -95,7 +95,7 @@ const Hero = () => {
     }
   })!
   const siteOwner = useAggregationSelector((agg) => agg.user)
-  const { avatar } = siteOwner || {}
+  const avatar = siteOwner?.avatar || '/apple-touch-icon.png'
 
   const titleAnimateD =
     title.template.reduce((acc, cur) => {
@@ -153,7 +153,7 @@ const Hero = () => {
           <Image
             height={300}
             width={300}
-            src={avatar!}
+            src={avatar}
             alt="Site Owner Avatar"
             className={clsxm(
               'aspect-square rounded-full border border-slate-200 dark:border-neutral-800',

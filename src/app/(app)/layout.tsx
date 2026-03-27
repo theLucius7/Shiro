@@ -47,6 +47,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
     user,
     theme: { config },
   } = fetchedData
+  const ownerName = user?.name || seo.title || 'Shiro'
+  const twitterHandle =
+    user?.socialIds?.twitter || user?.socialIds?.x || '__oQuery'
 
   return {
     metadataBase: new URL(url.webUrl),
@@ -100,11 +103,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
       url: url.webUrl,
       images: {
         url: `${url.webUrl}/og`,
-        username: user.name,
+        username: ownerName,
       },
     },
     twitter: {
-      creator: `@${user.socialIds?.twitter || user.socialIds?.x || '__oQuery'}`,
+      creator: `@${twitterHandle}`,
       card: 'summary_large_image',
       title: seo.title,
       description: seo.description,
