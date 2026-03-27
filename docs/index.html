@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shiro Docs</title>
+    <meta
+      name="description"
+      content="自用、魔改版 Shiro 的项目文档，包含架构、目录、开发和部署说明。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">Project Docs</p>
+        <div class="hero-grid">
+          <div>
+            <h1>自用、魔改的 Shiro</h1>
+            <p class="hero-copy">
+              这不是上游 Shiro 的镜像仓库，而是一套长期服务于当前站点、持续按自用需求改造的
+              fork。这里整理的是项目级文档，不是通用主题说明书。
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#overview">开始阅读</a>
+              <a class="button secondary" href="./storybook/">打开 Storybook</a>
+            </div>
+          </div>
+          <div class="hero-card">
+            <p class="hero-card-title">文档覆盖范围</p>
+            <ul class="hero-list">
+              <li>仓库定位与上游关系</li>
+              <li>前台、后台、API route 和 Storybook</li>
+              <li>本地开发、构建、发布、GitHub Pages</li>
+              <li>当前仓库的自用边界与约束</li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <div class="layout">
+        <aside class="toc">
+          <p class="toc-title">目录</p>
+          <nav>
+            <a href="#overview">项目概览</a>
+            <a href="#architecture">架构分层</a>
+            <a href="#structure">目录结构</a>
+            <a href="#development">开发流程</a>
+            <a href="#deploy">发布与部署</a>
+            <a href="#pages">GitHub Pages</a>
+            <a href="#notes">自用边界</a>
+          </nav>
+        </aside>
+
+        <main class="content">
+          <section id="overview" class="section">
+            <div class="section-head">
+              <p class="section-kicker">Overview</p>
+              <h2>项目概览</h2>
+            </div>
+            <div class="card-grid">
+              <article class="card">
+                <h3>仓库定位</h3>
+                <p>
+                  当前仓库更接近“站点前端源码”而不是“可直接复用的官方主题”。设计语言来自上游
+                  Shiro，但实现细节已经明显偏向自用。
+                </p>
+              </article>
+              <article class="card">
+                <h3>上游关系</h3>
+                <p>
+                  仍基于
+                  <a href="https://github.com/Innei/Shiro">Innei/Shiro</a>
+                  和 Mix Space 生态，但不再追求与上游完全一致。出现差异时，以当前仓库代码为准。
+                </p>
+              </article>
+              <article class="card">
+                <h3>主要能力</h3>
+                <p>
+                  前台站点、轻后台、内容编辑、评论管理、实时事件、代理 API、S3 上传、项目级
+                  Storybook，一并放在同一个仓库里维护。
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section id="architecture" class="section">
+            <div class="section-head">
+              <p class="section-kicker">Architecture</p>
+              <h2>架构分层</h2>
+            </div>
+            <div class="stack">
+              <article class="stack-card">
+                <h3>前台站点</h3>
+                <p>
+                  基于 Next.js App Router，主要页面位于
+                  <code>src/app/(app)</code>。服务端先拉聚合数据，再把状态分发到 Jotai 和
+                  TanStack Query。
+                </p>
+              </article>
+              <article class="stack-card">
+                <h3>轻后台</h3>
+                <p>
+                  后台入口仍在 Next 内，但具体页面是借助 React Router 在
+                  <code>/dashboard</code> 下二次挂载完成，代码集中在
+                  <code>src/routes</code> 和 <code>src/app/(dashboard)</code>。
+                </p>
+              </article>
+              <article class="stack-card">
+                <h3>数据访问</h3>
+                <p>
+                  统一通过 <code>@shiro/fetch</code> 和 <code>@mx-space/api-client</code>
+                  做 API 请求，按 server/client 场景分开实现。
+                </p>
+              </article>
+              <article class="stack-card">
+                <h3>实时层</h3>
+                <p>
+                  通过 SharedWorker + Socket.IO 管理连接和广播，尽量减少多标签页重复建连。
+                </p>
+              </article>
+              <article class="stack-card">
+                <h3>扩展能力</h3>
+                <p>
+                  在 <code>src/app/api</code> 下维护了一批只为当前站点服务的 route，包含
+                  GitHub、TMDB、Bangumi、音乐代理、Webhook、AI 摘要和 S3 上传。
+                </p>
+              </article>
+              <article class="stack-card">
+                <h3>组件预览</h3>
+                <p>
+                  <code>storybook/</code> 是单独的 Vite 工程，用来预览和回归组件。当前文档站会把它一起部署到
+                  GitHub Pages 的 <code>/storybook/</code> 子路径。
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section id="structure" class="section">
+            <div class="section-head">
+              <p class="section-kicker">Structure</p>
+              <h2>目录结构</h2>
+            </div>
+            <div class="dual-grid">
+              <article class="card">
+                <h3>关键目录</h3>
+                <pre><code>src/
+  app/           Next.js 页面与 API routes
+  components/    UI、布局和业务模块
+  providers/     根级上下文与业务 provider
+  queries/       React Query 查询定义
+  routes/        轻后台的 React Router 页面
+  socket/        SharedWorker + Socket.IO
+
+storybook/       组件预览工程
+packages/fetch/  server/client 分离的请求封装
+scripts/         构建、打包、部署辅助脚本
+docs/            GitHub Pages 项目文档源码</code></pre>
+              </article>
+              <article class="card">
+                <h3>主要技术栈</h3>
+                <ul class="bullet-list">
+                  <li>Next.js 16 + React 18 + TypeScript</li>
+                  <li>Tailwind CSS + 自定义样式层</li>
+                  <li>Jotai</li>
+                  <li>TanStack Query</li>
+                  <li>Socket.IO</li>
+                  <li>Mix Space API Client</li>
+                  <li>单独的 Vite Storybook 工程</li>
+                </ul>
+              </article>
+            </div>
+          </section>
+
+          <section id="development" class="section">
+            <div class="section-head">
+              <p class="section-kicker">Development</p>
+              <h2>本地开发</h2>
+            </div>
+            <div class="card-grid">
+              <article class="card">
+                <h3>环境要求</h3>
+                <pre><code>Node.js &gt;= 20
+pnpm@10.12.4</code></pre>
+              </article>
+              <article class="card">
+                <h3>站点启动</h3>
+                <pre><code>cp .env.template .env
+pnpm install
+pnpm dev</code></pre>
+                <p>默认端口是 <code>2323</code>。</p>
+              </article>
+              <article class="card">
+                <h3>组件预览</h3>
+                <pre><code>cd storybook
+pnpm install
+pnpm dev</code></pre>
+              </article>
+              <article class="card">
+                <h3>常用命令</h3>
+                <pre><code>pnpm dev
+pnpm dev:turbo
+pnpm build
+pnpm analyze
+pnpm lint</code></pre>
+              </article>
+            </div>
+          </section>
+
+          <section id="deploy" class="section">
+            <div class="section-head">
+              <p class="section-kicker">Deploy</p>
+              <h2>发布与部署</h2>
+            </div>
+            <div class="notice">
+              当前仓库存在两条主要发布思路: Docker 运行和 standalone 打包。二者都更偏向当前站点的部署习惯，而不是通用主题分发。
+            </div>
+            <div class="dual-grid">
+              <article class="card">
+                <h3>Docker</h3>
+                <pre><code>cp .env.template .env
+docker compose up -d</code></pre>
+                <p>
+                  对应文件是 <code>Dockerfile</code> 和 <code>docker-compose.yml</code>。
+                </p>
+              </article>
+              <article class="card">
+                <h3>Standalone</h3>
+                <pre><code>sh ./ci-release-build.sh
+sh ./standalone-bundle.sh</code></pre>
+                <p>
+                  构建脚本围绕 <code>.next/standalone</code> 组织，生成可直接分发的压缩包。
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section id="pages" class="section">
+            <div class="section-head">
+              <p class="section-kicker">Pages</p>
+              <h2>GitHub Pages 说明</h2>
+            </div>
+            <article class="card wide">
+              <h3>当前配置</h3>
+              <p>
+                文档站源码在 <code>docs/</code>，Pages 部署 workflow 在
+                <code>.github/workflows/deploy-pages.yml</code>。这个 workflow 会做三件事:
+              </p>
+              <ol class="ordered-list">
+                <li>安装根仓库依赖并构建 <code>storybook/</code></li>
+                <li>把项目文档和 Storybook 组装到同一个静态站点目录</li>
+                <li>通过 GitHub Actions 部署到 GitHub Pages</li>
+              </ol>
+              <p>
+                部署完成后，文档站在 Pages 根路径，Storybook 在
+                <code>/storybook/</code> 子路径。
+              </p>
+            </article>
+          </section>
+
+          <section id="notes" class="section">
+            <div class="section-head">
+              <p class="section-kicker">Notes</p>
+              <h2>自用边界</h2>
+            </div>
+            <div class="card-grid">
+              <article class="card">
+                <h3>不要把它当官方模板</h3>
+                <p>
+                  这里的默认值、环境变量和某些交互都偏向当前站点。直接拿去二次部署前，先确认 API、
+                  Gateway、存储和第三方服务约定是否对得上。
+                </p>
+              </article>
+              <article class="card">
+                <h3>文档站的角色</h3>
+                <p>
+                  这套 GitHub Pages 不是产品官网，而是仓库级文档入口。它更适合给维护者、协作者和后续 fork
+                  使用。
+                </p>
+              </article>
+              <article class="card">
+                <h3>推荐入口</h3>
+                <p>
+                  上游项目说明仍然请看
+                  <a href="https://github.com/Innei/Shiro">Innei/Shiro</a>。当前仓库自己的定位和部署，以此文档与代码为准。
+                </p>
+              </article>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <footer class="footer">
+        <p>Shiro project docs for this custom fork.</p>
+        <div class="footer-links">
+          <a href="./">Docs Home</a>
+          <a href="./storybook/">Storybook</a>
+          <a href="https://github.com/theLucius7/Shiro">Repository</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
