@@ -16,6 +16,7 @@ import { clsxm } from '~/lib/helper'
 import { throttle } from '~/lib/lodash'
 import { useWrappedElement } from '~/providers/shared/WrappedElementProvider'
 
+import { useTocHeadingStrategy } from './TocHeadingStrategy'
 import { TocTree } from './TocTree'
 
 export type TocAsideProps = {
@@ -62,18 +63,13 @@ export const TocAside = forwardRef<
     if ($article === undefined) {
       throw new TypeError('<Toc /> must be used in <WrappedElementProvider />')
     }
+    const queryHeadings = useTocHeadingStrategy()
     const $headings = useMemo(() => {
       if (!$article) {
         return []
       }
-      return [...$article.querySelectorAll('h1,h2,h3,h4,h5,h6')].filter(
-        ($heading) => {
-          if (($heading as HTMLElement).dataset['markdownHeading'] === 'true')
-            return true
-          return false
-        },
-      ) as HTMLHeadingElement[]
-    }, [$article, updated])
+      return queryHeadings($article)
+    }, [$article, queryHeadings, updated])
 
     useEffect(() => {
       const setMaxWidth = throttle(() => {

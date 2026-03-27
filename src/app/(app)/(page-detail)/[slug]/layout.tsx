@@ -1,9 +1,12 @@
+import clsx from 'clsx'
+import type { PageModel } from '@mx-space/api-client'
 import type { Metadata } from 'next'
 import * as React from 'react'
 import { cache } from 'react'
 
 import { CommentAreaRootLazy } from '~/components/modules/comment'
 import { TocFAB } from '~/components/modules/toc/TocFAB'
+import { TocHeadingStrategyProvider } from '~/components/modules/toc/TocHeadingStrategy'
 import {
   BottomToUpSoftScaleTransitionView,
   BottomToUpTransitionView,
@@ -29,10 +32,15 @@ import {
 export const dynamic = 'force-dynamic'
 const getData = cache(async (params: PageParams) => {
   await attachServerFetch()
-  const data = await apiClient.page
-    .getBySlug(params.slug)
+  const data = await apiClient.page.proxy
+    .slug(params.slug)
+    .get<PageModel>({
+      params: {
+        prefer: 'lexical',
+      },
+    })
     .catch(requestErrorHandler)
-  return data.$serialized
+  return data
 })
 
 export const generateMetadata = async ({
@@ -84,7 +92,10 @@ export default definePrerenderPage<PageParams>()({
 
   Component: ({ data, children }) => {
     return (
-      <>
+      <TocHeadingStrategyProvider
+        contentFormat={data.contentFormat}
+        hasContent={!!data.content}
+      >
         <CurrentPageDataProvider data={data} />
         <div className="relative flex min-h-[120px] w-full">
           <PageLoading>
@@ -92,7 +103,9 @@ export default definePrerenderPage<PageParams>()({
               <HeaderMetaInfoSetting />
 
               <WrappedElementProvider eoaDetect>
-                <article className="prose">
+                <article
+                  className={clsx(data.contentFormat !== 'lexical' && 'prose')}
+                >
                   <header className="mb-8">
                     <BottomToUpSoftScaleTransitionView
                       lcpOptimization
@@ -132,7 +145,7 @@ export default definePrerenderPage<PageParams>()({
         <OnlyMobile>
           <TocFAB />
         </OnlyMobile>
-      </>
+      </TocHeadingStrategyProvider>
     )
   },
 })

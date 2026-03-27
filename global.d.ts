@@ -64,6 +64,8 @@ declare module '@mx-space/api-client' {
     banner?: string | { type: string; message: string }
   }
   interface TextBaseModel extends BaseCommentIndexModel {
+    content?: string
+    contentFormat?: string
     meta?: PostMeta
   }
 

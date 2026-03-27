@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import type { ModelWithLiked, PostModel } from '@mx-space/api-client'
 import type { Metadata } from 'next'
 
@@ -16,6 +17,7 @@ import { GoToAdminEditingButton } from '~/components/modules/shared/GoToAdminEdi
 import { ReadIndicatorForMobile } from '~/components/modules/shared/ReadIndicator'
 import { SummarySwitcher } from '~/components/modules/shared/SummarySwitcher'
 import { TocFAB } from '~/components/modules/toc/TocFAB'
+import { TocHeadingStrategyProvider } from '~/components/modules/toc/TocHeadingStrategy'
 import { XLogInfoForPost } from '~/components/modules/xlog'
 import {
   BottomToUpSoftScaleTransitionView,
@@ -34,10 +36,10 @@ import { WrappedElementProvider } from '~/providers/shared/WrappedElementProvide
 
 import type { PageParams } from './api'
 import { getData } from './api'
+import { PostMarkdown } from './PostMarkdown'
 import {
   HeaderMetaInfoSetting,
   MarkdownSelection,
-  PostMarkdown,
   PostMarkdownImageRecordProvider,
   PostMetaBarInternal,
   PostTitle,
@@ -118,7 +120,9 @@ const PostPage = ({ data }: { data: ModelWithLiked<PostModel> }) => {
 
           <PostMarkdownImageRecordProvider>
             <MarkdownSelection>
-              <article className="prose">
+              <article
+                className={clsx(data.contentFormat !== 'lexical' && 'prose')}
+              >
                 <div className="sr-only">
                   <PostTitle />
                 </div>
@@ -158,7 +162,10 @@ export default definePrerenderPage<PageParams>()({
     const currentPath = `/posts/${params.category}/${params.slug}`
 
     return (
-      <>
+      <TocHeadingStrategyProvider
+        contentFormat={data.contentFormat}
+        hasContent={!!data.content}
+      >
         {currentPath !== fullPath && <SlugReplacer to={fullPath} />}
 
         <CurrentPostDataProvider data={data} />
@@ -180,7 +187,7 @@ export default definePrerenderPage<PageParams>()({
         <OnlyMobile>
           <TocFAB />
         </OnlyMobile>
-      </>
+      </TocHeadingStrategyProvider>
     )
   },
 })

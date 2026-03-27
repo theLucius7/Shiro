@@ -4,10 +4,10 @@ import { ReadIndicatorForMobile } from '~/components/modules/shared/ReadIndicato
 import { LayoutRightSidePortal } from '~/providers/shared/LayoutRightSideProvider'
 import { WrappedElementProvider } from '~/providers/shared/WrappedElementProvider'
 
+import { PageMarkdown } from './PageMarkdown'
 import {
   MarkdownImageRecordProviderInternal,
   MarkdownSelection,
-  PageMarkdown,
 } from './pageExtra'
 
 const PageDetail = () => {

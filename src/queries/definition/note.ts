@@ -30,6 +30,7 @@ export const note = {
           .nid(id)
           .get<NoteWrappedWithLikedPayload>({
             params: {
+              prefer: 'lexical',
               password,
               token,
             },

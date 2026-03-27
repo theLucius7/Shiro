@@ -76,7 +76,7 @@ function loadAndApplyFont(
   }
 
   const $style = document.createElement('style')
-  $style.innerHTML = `#${MAIN_MARKDOWN_ID} { font-family: ${config.fontFamily};`
+  $style.innerHTML = `#${MAIN_MARKDOWN_ID} { font-family: ${config.fontFamily}; --note-font-override: ${config.fontFamily}; }`
   document.head.append($style)
 
   return () => {

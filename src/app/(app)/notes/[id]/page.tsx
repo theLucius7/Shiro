@@ -23,6 +23,7 @@ import { BanCopyWrapper } from '~/components/modules/shared/BanCopyWrapper'
 import { ReadIndicatorForMobile } from '~/components/modules/shared/ReadIndicator'
 import { SummarySwitcher } from '~/components/modules/shared/SummarySwitcher'
 import { TocFAB } from '~/components/modules/toc/TocFAB'
+import { TocHeadingStrategyProvider } from '~/components/modules/toc/TocHeadingStrategy'
 import { XLogInfoForNote } from '~/components/modules/xlog'
 import { BottomToUpSoftScaleTransitionView } from '~/components/ui/transition'
 import { OnlyMobile } from '~/components/ui/viewport/OnlyMobile'
@@ -41,12 +42,12 @@ import { Paper } from '../../../../components/layout/container/Paper'
 import { NoteHeadCover } from '../../../../components/modules/note/NoteHeadCover'
 import { NoteHideIfSecret } from '../../../../components/modules/note/NoteHideIfSecret'
 import { getData } from './api'
+import { NoteMarkdown } from './NoteMarkdown'
 import {
   IndentArticleContainer,
   MarkdownSelection,
   NoteHeaderDate,
   NoteHeaderMetaInfoSetting,
-  NoteMarkdown,
   NoteMarkdownImageRecordProvider,
   NoteTitle,
 } from './pageExtra'
@@ -84,7 +85,7 @@ function PageInner({ data }: { data: NoteModel }) {
           <NoteMarkdownImageRecordProvider>
             <BanCopyWrapper>
               <MarkdownSelection>
-                <IndentArticleContainer>
+                <IndentArticleContainer prose={data.contentFormat !== 'lexical'}>
                   <header className="sr-only">
                     <NoteTitle />
                   </header>
@@ -173,7 +174,10 @@ export default definePrerenderPage<NoteDetailPageParams>()({
   },
   Component({ data, params: { id: nid } }) {
     return (
-      <>
+      <TocHeadingStrategyProvider
+        contentFormat={data.data.contentFormat}
+        hasContent={!!data.data.content}
+      >
         <CurrentNoteNidProvider nid={nid} />
         <CurrentNoteDataProvider data={data} />
 
@@ -196,7 +200,7 @@ export default definePrerenderPage<NoteDetailPageParams>()({
         <OnlyMobile>
           <TocFAB />
         </OnlyMobile>
-      </>
+      </TocHeadingStrategyProvider>
     )
   },
 })

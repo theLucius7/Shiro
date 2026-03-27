@@ -8,13 +8,14 @@ import { Fragment, useEffect, useMemo } from 'react'
 import { useSetHeaderMetaInfo } from '~/components/layout/header/hooks'
 import { GoToAdminEditingButton } from '~/components/modules/shared/GoToAdminEditingButton'
 import { WithArticleSelectionAction } from '~/components/modules/shared/WithArticleSelectionAction'
-import { MainMarkdown } from '~/components/ui/markdown'
 import { noopArr } from '~/lib/noop'
 import { MarkdownImageRecordProvider } from '~/providers/article/MarkdownImageRecordProvider'
 import { useCurrentPageDataSelector } from '~/providers/page/CurrentPageDataProvider'
 import { useAggregationSelector } from '~/providers/root/aggregation-data-provider'
 
 import Loading from './loading'
+
+export { PageMarkdown } from './PageMarkdown'
 
 export const PageLoading: Component = ({ children }) => {
   const id = useCurrentPageDataSelector((p) => p?.id)
@@ -24,19 +25,6 @@ export const PageLoading: Component = ({ children }) => {
   }
 
   return children
-}
-
-export const PageMarkdown = () => {
-  const text = useCurrentPageDataSelector((data) => data?.text)
-  if (!text) return null
-
-  return (
-    <MainMarkdown
-      allowsScript
-      value={text}
-      className="min-w-0 overflow-hidden"
-    />
-  )
 }
 export const MarkdownImageRecordProviderInternal = (
   props: PropsWithChildren,

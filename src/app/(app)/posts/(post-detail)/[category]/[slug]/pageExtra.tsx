@@ -8,10 +8,11 @@ import { useEffect, useRef } from 'react'
 import { useSetHeaderMetaInfo } from '~/components/layout/header/hooks'
 import { PostMetaBar } from '~/components/modules/post/PostMetaBar'
 import { WithArticleSelectionAction } from '~/components/modules/shared/WithArticleSelectionAction'
-import { MainMarkdown } from '~/components/ui/markdown'
 import { noopArr } from '~/lib/noop'
 import { MarkdownImageRecordProvider } from '~/providers/article/MarkdownImageRecordProvider'
 import { useCurrentPostDataSelector } from '~/providers/post/CurrentPostDataProvider'
+
+export { PostMarkdown } from './PostMarkdown'
 
 export const PostTitle = () => {
   const title = useCurrentPostDataSelector((data) => data?.title)!
@@ -34,18 +35,6 @@ export const MarkdownSelection: Component = (props) => {
     >
       {props.children}
     </WithArticleSelectionAction>
-  )
-}
-export const PostMarkdown = () => {
-  const text = useCurrentPostDataSelector((data) => data?.text)
-  if (!text) return null
-
-  return (
-    <MainMarkdown
-      allowsScript
-      value={text}
-      className="min-w-0 overflow-hidden"
-    />
   )
 }
 export const PostMarkdownImageRecordProvider = (props: PropsWithChildren) => {

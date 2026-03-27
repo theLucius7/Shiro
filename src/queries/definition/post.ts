@@ -1,4 +1,9 @@
-import type { PaginateResult, PostModel, TagModel } from '@mx-space/api-client'
+import type {
+  ModelWithLiked,
+  PaginateResult,
+  PostModel,
+  TagModel,
+} from '@mx-space/api-client'
 import { useMutation } from '@tanstack/react-query'
 
 import { useResetAutoSaverData } from '~/components/modules/dashboard/writing/BaseWritingProvider'
@@ -17,9 +22,15 @@ export const post = {
       queryFn: async ({ queryKey }) => {
         const [, category, slug] = queryKey
 
-        const data = await apiClient.post.getPost(category, slug)
+        const data = await apiClient.post.proxy(category)(slug).get<
+          ModelWithLiked<PostModel>
+        >({
+          params: {
+            prefer: 'lexical',
+          },
+        })
 
-        return data.$serialized
+        return data
       },
     }),
 }

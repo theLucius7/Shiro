@@ -3,7 +3,7 @@
 import type { Image } from '@mx-space/api-client'
 import clsx from 'clsx'
 import dayjs from 'dayjs'
-import type { Key, PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
 import { useEffect } from 'react'
 
 import { MdiClockOutline } from '~/components/icons/clock'
@@ -11,14 +11,14 @@ import { useSetHeaderMetaInfo } from '~/components/layout/header/hooks'
 import { GoToAdminEditingButton } from '~/components/modules/shared/GoToAdminEditingButton'
 import { WithArticleSelectionAction } from '~/components/modules/shared/WithArticleSelectionAction'
 import { FloatPopover } from '~/components/ui/float-popover'
-import type { MarkdownToJSX } from '~/components/ui/markdown'
-import { MainMarkdown, RuleType } from '~/components/ui/markdown'
 import { parseDate } from '~/lib/datetime'
 import { noopArr } from '~/lib/noop'
 import { MarkdownImageRecordProvider } from '~/providers/article/MarkdownImageRecordProvider'
 import { useCurrentNoteDataSelector } from '~/providers/note/CurrentNoteDataProvider'
 
 import styles from './page.module.css'
+
+export { NoteMarkdown } from './NoteMarkdown'
 
 export const MarkdownSelection: Component = (props) => {
   const id = useCurrentNoteDataSelector((data) => data?.data?.id)!
@@ -101,18 +101,6 @@ export const NoteHeaderDate = () => {
     </FloatPopover>
   )
 }
-export const NoteMarkdown = () => {
-  const text = useCurrentNoteDataSelector((data) => data?.data.text)!
-
-  return (
-    <MainMarkdown
-      className="mt-10"
-      allowsScript
-      renderers={MarkdownRenderers}
-      value={text}
-    />
-  )
-}
 export const NoteMarkdownImageRecordProvider = (props: PropsWithChildren) => {
   const images = useCurrentNoteDataSelector(
     (data) => data?.data.images || (noopArr as Image[]),
@@ -143,24 +131,20 @@ export const NoteHeaderMetaInfoSetting = () => {
 
   return null
 }
-
-const MarkdownRenderers: Partial<MarkdownToJSX.PartialRules> = {
-  [RuleType.text]: {
-    render(node: MarkdownToJSX.TextNode, _: any, state?: MarkdownToJSX.State) {
-      return <span key={state?.key as Key}>{node.text}</span>
-    },
-  },
-}
-export const IndentArticleContainer = (props: PropsWithChildren) => {
+export const IndentArticleContainer = ({
+  children,
+  prose = true,
+}: PropsWithChildren<{ prose?: boolean }>) => {
   return (
     <article
       className={clsx(
-        'prose relative',
+        'relative',
+        prose && 'prose',
         styles['with-indent'],
         styles['with-serif'],
       )}
     >
-      {props.children}
+      {children}
     </article>
   )
 }
