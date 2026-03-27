@@ -8,12 +8,12 @@
     "node": ">=20"
   },
   "scripts": {
-    "analyze": "cross-env NODE_ENV=production ANALYZE=true BUNDLE_ANALYZE=browser next build",
+    "analyze": "cross-env NODE_ENV=production ANALYZE=true BUNDLE_ANALYZE=browser next build --webpack",
     "prebuild": "rimraf .next || exit 0",
-    "build": "cross-env NODE_ENV=production NODE_OPTIONS=--max_old_space_size=4096 next build",
-    "build:ci": "cross-env NODE_ENV=production NODE_OPTIONS=--max_old_space_size=4096 NEXT_TELEMETRY_DISABLED=1 CI=true next build",
-    "dev": "cross-env NODE_ENV=development next dev -p 2323",
-    "dev:turbo": "cross-env NODE_ENV=development next dev -p 2323 --turbo",
+    "build": "cross-env NODE_ENV=production NODE_OPTIONS=--max_old_space_size=4096 next build --webpack",
+    "build:ci": "cross-env NODE_ENV=production NODE_OPTIONS=--max_old_space_size=4096 NEXT_TELEMETRY_DISABLED=1 CI=true next build --webpack",
+    "dev": "cross-env NODE_ENV=development next dev -p 2323 --webpack",
+    "dev:turbo": "cross-env NODE_ENV=development next dev -p 2323 --turbopack",
     "lint": "eslint --fix",
     "prepare": "pnpm exec simple-git-hooks && test -f .env || cp .env.template .env",
     "prod:pm2": "cross-env NODE_ENV=production pm2 restart ecosystem.config.cjs",
@@ -78,7 +78,7 @@
     "mermaid": "11.10.0",
     "motion": "12.18.2",
     "nanoid": "^5.1.5",
-    "next": "14.2.8",
+    "next": "16.1.5",
     "next-runtime-env": "3.3.0",
     "next-themes": "0.4.6",
     "ofetch": "1.4.1",
@@ -198,8 +198,5 @@
     "budget": 358400,
     "budgetPercentIncreaseRed": 20,
     "showDetails": true
-  },
-  "browserslist": [
-    "defaults and fully supports es6-module"
-  ]
+  }
 }

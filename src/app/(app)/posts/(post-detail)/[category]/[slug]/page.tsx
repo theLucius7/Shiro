@@ -49,11 +49,12 @@ export const dynamic = 'force-dynamic'
 export const generateMetadata = async ({
   params,
 }: {
-  params: PageParams
+  params: Promise<PageParams>
 }): Promise<Metadata> => {
-  const { slug } = params
+  const resolvedParams = await params
+  const { slug } = resolvedParams
   try {
-    const data = await getData(params)
+    const data = await getData(resolvedParams)
     const {
       title,
       category: { slug: categorySlug },
@@ -62,7 +63,7 @@ export const generateMetadata = async ({
     } = data
     const description = getSummaryFromMd(text ?? '')
 
-    const ogImage = getOgUrl('post', {
+    const ogImage = await getOgUrl('post', {
       category: categorySlug,
       slug,
     })

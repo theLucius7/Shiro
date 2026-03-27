@@ -42,6 +42,7 @@ let nextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
   output: 'standalone',
+  outputFileTracingRoot: __dirname,
   assetPrefix: isProd ? env.ASSETPREFIX || undefined : undefined,
   compiler: {
     // reactRemoveProperties: { properties: ['^data-id$', '^data-(\\w+)-id$'] },
@@ -85,9 +86,11 @@ let nextConfig = {
       bufferutil: 'commonjs bufferutil',
     })
 
-    config.plugins.push(
-      codeInspectorPlugin({ bundler: 'webpack', hotKeys: ['metaKey'] }),
-    )
+    if (!isProd) {
+      config.plugins.push(
+        codeInspectorPlugin({ bundler: 'webpack', hotKeys: ['metaKey'] }),
+      )
+    }
 
     return config
   },
