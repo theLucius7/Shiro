@@ -37,6 +37,7 @@ import {
 
 import { ActivityPostList } from './components/ActivityPostList'
 import { ActivityRecent } from './components/ActivityRecent'
+import { HeroBackdrop } from './components/HeroBackdrop'
 
 export default function Home() {
   return (
@@ -102,7 +103,8 @@ const Hero = () => {
       return acc + (cur.text?.length || 0)
     }, 0) * 50
   return (
-    <div className="mt-20 min-w-0 max-w-screen overflow-hidden lg:mt-[-4.5rem] lg:h-dvh lg:min-h-[800px]">
+    <div className="relative isolate mt-20 min-w-0 max-w-screen overflow-hidden lg:mt-[-4.5rem] lg:h-dvh lg:min-h-[800px]">
+      <HeroBackdrop />
       <TwoColumnLayout leftContainerClassName="mt-[120px] lg:mt-0 lg:h-[15rem] lg:h-1/2">
         <>
           <m.div

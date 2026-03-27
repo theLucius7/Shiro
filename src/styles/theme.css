@@ -1,14 +1,66 @@
+html.noise body {
+  position: relative;
+  background: transparent;
+  isolation: isolate;
+}
+
 html.noise body::before {
   position: fixed;
   inset: 0;
+  z-index: -1;
   content: '';
-  opacity: 0.04;
-  background-repeat: repeat;
-  /* filter: blur(3px); */
-}
-
-html[data-theme='dark'].noise body::before {
-  opacity: 0.01;
+  pointer-events: none;
+  transform: translateZ(0);
+  background-color: var(--color-root-bg);
+  background-image:
+    radial-gradient(
+      circle 900px at 50% -8%,
+      var(--paper-ambient-highlight) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle 780px at 18% 14%,
+      var(--paper-washi-glow) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      circle 640px at 82% 18%,
+      var(--paper-cloud-cool) 0%,
+      transparent 72%
+    ),
+    radial-gradient(
+      circle 960px at 48% 108%,
+      var(--paper-cloud-warm) 0%,
+      transparent 70%
+    ),
+    linear-gradient(
+      110deg,
+      transparent 20%,
+      var(--paper-bend-strong) 55%,
+      transparent 80%
+    ),
+    linear-gradient(25deg, transparent 30%, var(--paper-bend-soft) 70%),
+    var(--paper-grain-image);
+  background-blend-mode:
+    normal, normal, soft-light, multiply, screen, normal, normal;
+  background-position:
+    50%,
+    50%,
+    50%,
+    50%,
+    50%,
+    50%,
+    0 0;
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    96px 96px;
 }
 
 @media print {
@@ -51,4 +103,84 @@ video.fit {
   width: 100%;
   height: auto;
   object-fit: cover;
+}
+
+.paper-hero-glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(72px);
+  will-change: transform, opacity;
+}
+
+.paper-hero-glow--primary {
+  background: radial-gradient(
+    ellipse,
+    var(--hero-glow-primary) 0%,
+    transparent 68%
+  );
+}
+
+.paper-hero-glow--secondary {
+  background: radial-gradient(
+    ellipse,
+    var(--hero-glow-secondary) 0%,
+    transparent 65%
+  );
+}
+
+.paper-hero-glow--ambient {
+  background: radial-gradient(
+    circle,
+    var(--hero-glow-ambient) 0%,
+    transparent 72%
+  );
+}
+
+@keyframes paper-drift-slow {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(18px, 10px, 0) scale(1.06);
+  }
+}
+
+@keyframes paper-drift-fast {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(-16px, 14px, 0) scale(1.08);
+  }
+}
+
+@keyframes paper-breathe {
+  0% {
+    opacity: 0.58;
+    transform: translate3d(0, 0, 0) scale(0.98);
+  }
+  100% {
+    opacity: 0.88;
+    transform: translate3d(0, -10px, 0) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .paper-drift-slow {
+    animation: paper-drift-slow 16s ease-in-out infinite alternate;
+  }
+
+  .paper-drift-fast {
+    animation: paper-drift-fast 20s ease-in-out infinite alternate-reverse;
+  }
+
+  .paper-breathe {
+    animation: paper-breathe 18s ease-in-out infinite alternate;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paper-hero-glow {
+    animation: none !important;
+  }
 }

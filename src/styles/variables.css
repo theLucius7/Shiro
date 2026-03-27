@@ -18,12 +18,37 @@ details summary {
 
 :root {
   --bg-opacity: rgba(255, 255, 255, 0.72);
-  --color-root-bg: rgb(255, 255, 255);
+  --root-bg: #fefdfb;
+  --color-root-bg: var(--root-bg);
+
+  --paper-grain-image: none;
+  --paper-ambient-highlight: rgba(255, 248, 238, 0.82);
+  --paper-washi-glow: rgba(255, 240, 223, 0.55);
+  --paper-cloud-cool: rgba(255, 255, 255, 0.2);
+  --paper-cloud-warm: rgba(237, 216, 190, 0.22);
+  --paper-bend-strong: rgba(255, 248, 240, 0.3);
+  --paper-bend-soft: rgba(247, 234, 214, 0.18);
+
+  --hero-glow-primary: rgba(255, 228, 180, 0.35);
+  --hero-glow-secondary: rgba(255, 240, 223, 0.24);
+  --hero-glow-ambient: rgba(255, 255, 255, 0.68);
 }
 
 [data-theme='dark'] {
   --bg-opacity: rgba(29, 29, 31, 0.72);
-  --color-root-bg: rgb(28, 28, 30);
+  --root-bg: #1c1c1e;
+  --color-root-bg: var(--root-bg);
+
+  --paper-ambient-highlight: rgba(216, 222, 239, 0.14);
+  --paper-washi-glow: rgba(144, 160, 207, 0.1);
+  --paper-cloud-cool: rgba(238, 242, 255, 0.08);
+  --paper-cloud-warm: rgba(111, 101, 87, 0.08);
+  --paper-bend-strong: rgba(255, 255, 255, 0.06);
+  --paper-bend-soft: rgba(228, 220, 206, 0.04);
+
+  --hero-glow-primary: rgba(180, 200, 255, 0.15);
+  --hero-glow-secondary: rgba(109, 140, 255, 0.16);
+  --hero-glow-ambient: rgba(255, 255, 255, 0.08);
 }
 
 ::selection {
