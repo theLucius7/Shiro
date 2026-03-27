@@ -2,7 +2,7 @@ import type { Placement, Strategy } from '@floating-ui/react-dom'
 import { flip, offset, shift, useFloating } from '@floating-ui/react-dom'
 import { AnimatePresence, m } from 'motion/react'
 import type { FC, PropsWithChildren } from 'react'
-import { cloneElement, useMemo, useRef, useState } from 'react'
+import { cloneElement, useMemo, useState } from 'react'
 
 import { clsxm } from '~/lib/helper'
 
@@ -24,14 +24,11 @@ export const FloatPanel: FC<FloatPanelProps & PropsWithChildren> = (props) => {
 
   const [panelOpen, setPanelOpen] = useState(false)
 
-  const { isPositioned, refs, x, y, elements } = useFloating({
+  const { isPositioned, refs, x, y } = useFloating({
     strategy,
     placement,
     middleware: [flip({ padding: 20 }), offset(10), shift()],
   })
-
-  const floatingRef = useRef<HTMLElement>()
-  floatingRef.current = elements.floating || undefined
   // @ts-ignore
   // useClickAway(floatingRef, (e) => {
 

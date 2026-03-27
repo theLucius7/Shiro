@@ -448,10 +448,13 @@ const OptimizedImage = memo(
     alt,
     onClick,
     ...rest
-  }: DetailedHTMLProps<
-    ImgHTMLAttributes<HTMLImageElement>,
-    HTMLImageElement
-  > & { ref?: React.RefObject<HTMLImageElement | null> }) => {
+  }: Omit<
+    DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+    'src'
+  > & {
+    ref?: React.RefObject<HTMLImageElement | null>
+    src?: string
+  }) => {
     const { height, width } = useMarkdownImageRecord(src!) || rest
 
     const isGif = src!.endsWith('.gif')

@@ -51,7 +51,6 @@ export const SayModalForm: FC<{
     <Form className="flex flex-col gap-2" onSubmit={handleSubmit} ref={formRef}>
       <FormTextarea
         style={{
-          // @ts-expect-error
           fieldSizing: 'content',
         }}
         className="max-h-[300px] min-h-[120px]"

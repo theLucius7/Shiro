@@ -1,6 +1,7 @@
 import type { Image } from '@mx-space/api-client'
 import type { MarkdownToJSX } from 'markdown-to-jsx'
 import { compiler, RuleType } from 'markdown-to-jsx'
+import type { Key } from 'react'
 import RSS from 'rss'
 import xss from 'xss'
 
@@ -122,7 +123,7 @@ export async function GET() {
                 [RuleType.textMarked]: {
                   render(node, output, state) {
                     return (
-                      <mark key={state?.key} className="rounded-md">
+                      <mark key={state?.key as Key} className="rounded-md">
                         <span className="px-1">
                           {output(node.children, state!)}
                         </span>
@@ -141,7 +142,7 @@ export async function GET() {
                     }
                     return (
                       <pre
-                        key={state?.key}
+                        key={state?.key as Key}
                         className={
                           node.lang
                             ? `language-${node.lang} lang-${node.lang}`
@@ -232,6 +233,6 @@ const ContainerRule: MarkdownToJSX.Rule = {
   ...__ContainerRule,
 
   render(node, _, state) {
-    return <NotSupportRender key={state?.key} />
+    return <NotSupportRender key={state?.key as Key} />
   },
 }

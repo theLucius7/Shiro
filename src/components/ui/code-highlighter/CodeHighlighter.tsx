@@ -20,12 +20,6 @@ import styles from './CodeHighlighter.module.css'
 import type { ShikiProps } from './shiki/Shiki'
 import { ShikiHighLighter } from './shiki/Shiki'
 
-declare global {
-  interface Window {
-    Prism: any
-  }
-}
-
 interface Props {
   lang: string | undefined
   content: string
@@ -76,7 +70,9 @@ export const BaseCodeHighlighter: Component<
   useLoadHighlighter(ref)
 
   useEffect(() => {
-    window.Prism?.highlightElement(ref.current)
+    if (ref.current && window.Prism) {
+      window.Prism.highlightElement(ref.current)
+    }
   }, [content, lang])
   return (
     <pre
@@ -96,7 +92,7 @@ export const BaseCodeHighlighter: Component<
 }
 
 const useLoadHighlighter = (ref: React.RefObject<HTMLElement | null>) => {
-  const prevThemeCSS = useRef<ReturnType<typeof loadStyleSheet>>()
+  const prevThemeCSS = useRef<ReturnType<typeof loadStyleSheet>>(undefined)
   const isPrintMode = useIsPrintMode()
   const isDark = useIsDark()
 
@@ -135,18 +131,23 @@ const useLoadHighlighter = (ref: React.RefObject<HTMLElement | null>) => {
         ]),
       )
       .then(() => {
-        if (ref.current) {
+        if (ref.current && window.Prism) {
           requestAnimationFrame(() => {
-            window.Prism?.highlightElement(ref.current)
+            if (ref.current && window.Prism) {
+              window.Prism.highlightElement(ref.current)
 
-            requestAnimationFrame(() => {
-              window.Prism?.highlightElement(ref.current)
-            })
+              requestAnimationFrame(() => {
+                if (ref.current && window.Prism) {
+                  window.Prism.highlightElement(ref.current)
+                }
+              })
+            }
           })
-        } else {
+        } else if (window.Prism) {
+          const prism = window.Prism
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-              window.Prism?.highlightAll()
+              prism.highlightAll()
             })
           })
         }

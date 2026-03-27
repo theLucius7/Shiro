@@ -124,7 +124,7 @@ const ExcalidrawImpl = forwardRef<InternelExcalidrawRefObject, ExcalidrawProps>(
     },
     ref,
   ) => {
-    const excalidrawAPIRef = React.useRef<ExcalidrawImperativeAPI>()
+    const excalidrawAPIRef = React.useRef<ExcalidrawImperativeAPI>(undefined)
     const modal = useModalStack()
     const isMobile = useIsMobile()
 

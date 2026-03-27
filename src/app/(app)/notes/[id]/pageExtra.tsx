@@ -3,7 +3,7 @@
 import type { Image } from '@mx-space/api-client'
 import clsx from 'clsx'
 import dayjs from 'dayjs'
-import type { PropsWithChildren } from 'react'
+import type { Key, PropsWithChildren } from 'react'
 import { useEffect } from 'react'
 
 import { MdiClockOutline } from '~/components/icons/clock'
@@ -147,7 +147,7 @@ export const NoteHeaderMetaInfoSetting = () => {
 const MarkdownRenderers: Partial<MarkdownToJSX.PartialRules> = {
   [RuleType.text]: {
     render(node: MarkdownToJSX.TextNode, _: any, state?: MarkdownToJSX.State) {
-      return <span key={state?.key}>{node.text}</span>
+      return <span key={state?.key as Key}>{node.text}</span>
     },
   },
 }

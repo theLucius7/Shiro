@@ -173,7 +173,12 @@
       "object.groupby": "npm:@nolyfill/object.groupby@latest",
       "object.hasown": "npm:@nolyfill/object.hasown@latest",
       "object.values": "npm:@nolyfill/object.values@latest",
-      "string.prototype.matchall": "npm:@nolyfill/string.prototype.matchall@latest"
+      "string.prototype.matchall": "npm:@nolyfill/string.prototype.matchall@latest",
+      "@types/react": "19.2.9",
+      "@types/react-dom": "19.2.3"
+    },
+    "patchedDependencies": {
+      "@innei/markdown-to-jsx-yet@7.7.7-11": "patches/@innei__markdown-to-jsx-yet@7.7.7-11.patch"
     }
   },
   "simple-git-hooks": {

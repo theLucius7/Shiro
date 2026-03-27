@@ -11,12 +11,28 @@ declare global {
     } & Props
   >
 
+  export type NextPageExtractedParams<
+    P extends {},
+    Props = {},
+  > = PropsWithChildren<
+    {
+      params: P
+    } & Props
+  >
+
   export type Component<P = {}> = FC<ComponentType & P>
 
   export type ComponentType<P = {}> = {
     className?: string
   } & PropsWithChildren &
     P
+
+  interface Window {
+    Prism?: {
+      highlightElement(element: Element): void
+      highlightAll(): void
+    }
+  }
 
   // TODO should remove in next TypeScript version
   interface Document {

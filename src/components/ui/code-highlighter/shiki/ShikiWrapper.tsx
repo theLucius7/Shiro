@@ -60,7 +60,7 @@ export const ShikiHighLighterWrapper = forwardRef<
   } = props
 
   const [copied, setCopied] = useState(false)
-  const copiedTimerRef = useRef<any>()
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(value)
     setCopied(true)

@@ -85,7 +85,7 @@ export const MarkdownCustomize: DocumentComponent = () => (
               render(node: MarkdownToJSX.CodeBlockNode, output, state) {
                 return (
                   <CodeBlockRender
-                    key={state?.key}
+                    key={state?.key as React.Key}
                     content={node.text}
                     lang={node.lang}
                   />
