@@ -1,117 +1,201 @@
 # Shiro
 
-> **重要声明：** 由于个人精力有限，开源版本的 Shiro 后续将不再积极维护，仅会在发现重要安全漏洞时进行修复。我将把主要精力投入到赞助版 [白い](https://github.com/innei-dev/Shiroi) 的维护和功能迭代中。开源版本依然可以正常使用，感谢大家的理解和支持。
+> 一套基于 [Innei/Shiro](https://github.com/Innei/Shiro) 持续改出来的「自用、魔改版 Shiro」。
 
-一个极简主义的个人网站主题，如纸的纯净，似雪的清新。
+这不是上游仓库的原版镜像，也不是一个面向所有人的开箱即用主题模板。
 
-专为 [Mix Space](https://github.com/mx-space) 生态系统设计的现代化个人站点前端。
+这个仓库更接近“我自己的站点前端源码”:
 
-## :sparkles: 示例站点
+- 保留了 Shiro 的整体设计语言、Mix Space 生态适配和一部分交互思路
+- 混入了自用站点需要的功能、接口代理、后台能力、发布脚本和实验性改动
+- 会优先服务当前站点自身需求，不承诺和上游保持完全一致，也不保证对所有部署环境通用
 
-以下是一些使用 Shiro 主题的精美站点：
+如果你要找的是:
 
-- [静かな森](https://innei.in)
-- [可愛い松](https://blog.wibus.ren/)
-- [启动台の博客](https://www.launchpadx.top/)
+- 通用版 Shiro
+- 官方文档
+- 面向社区的稳定主题版本
 
-欢迎体验 Shiro 带来的极简之美！
+优先参考:
 
-## :rocket: 核心特性
+- [Innei/Shiro](https://github.com/Innei/Shiro)
+- Mix Space 主题部署文档: https://mx-space.js.org/docs/themes/shiro/deploy
 
-- **:zap: 极致性能**：在 LightHouse 测试中表现卓越，Performance 和 Best Practice 均超过 90%
-- **:art: 现代设计**：简洁而不简单的用户界面，提供流畅优雅的用户体验
-- **:gem: 细节至上**：采用符合物理学的 Spring 弹性动画，每一帧都如自然般舒适
-- **:bell: 实时通知**：通过 WebSocket 连接，访客可实时接收最新文章推送
-- **:computer: 活动状态**：结合 [ProcessReporter](https://github.com/Innei/ProcessReporter)，在主页展示实时活动状态
-- **:pencil: 扩展语法**：支持丰富的 Markdown 扩展语法，满足多样化写作需求
-- **:wrench: 轻量管理**：内置轻量级管理面板，便于内容管理
+## 项目定位
 
-## :gear: 技术架构
+这个仓库的目标很简单:
 
-基于现代化的前端技术栈构建：
+- 给我自己的站点使用
+- 在原版 Shiro 基础上继续魔改
+- 把一些和个人工作流强相关的东西直接放进仓库里
 
-- **NextJS** (App Router) - React 全栈框架
-- **Jotai** - 原子化状态管理
-- **Framer Motion** - 流畅动画库
-- **Radix UI** - 无障碍组件库
-- **Socket.IO** - 实时通信
-- **TailwindCSS** - 原子化 CSS 框架
+因此你会在这里看到一些并不“通用主题化”的内容，比如:
 
-## 📖 部署指南
+- 只为当前站点保留的页面结构和 UI 细节
+- 和特定 API / Gateway / 第三方服务绑定的实现
+- 轻量后台、写作面板、代理 API、WebSocket、摘要能力等混合在同一个仓库
+- 偏向我自己部署方式的 standalone / Docker / CI 发布脚本
 
-详细的部署教程请参考：https://mx-space.js.org/docs/themes/shiro/deploy
+一句话总结:
 
-感谢 @wibus-wee、@wuhang2003 等社区贡献者编写的详细文档。
+> 这是一套能跑、能继续改、但明显带有强烈自用痕迹的 Shiro fork。
 
-## :camera: 界面预览
+## 和上游的关系
 
-<img width="1471" alt="Live Demo" src="https://github.com/Innei/Shiro/assets/41265413/bf8af4ec-0f0c-441a-8c06-4b44e1649597">
+本项目基于 Shiro，也仍然属于 Mix Space 生态的一部分，但已经不是“纯上游”了。
 
-**轻量级管理面板：**
+你可以把它理解成:
 
-![管理面板 1](https://github.com/Innei/Shiro/assets/41265413/4bb5b34a-3ce2-45da-bec7-4596ac87f849)
-![管理面板 2](https://github.com/Innei/Shiro/assets/41265413/592941d0-2ebe-4d64-bd77-3171829bd896)
+- 设计与基础思路来自上游
+- 代码实现已经按自用需求长期分叉
+- 文档、行为和部署细节请以当前仓库为准
 
-<details>
-<summary>
-点击查看更多完整页面截图
-</summary>
+如果当前仓库和上游 README、截图、部署说明出现差异，以当前仓库代码为准。
 
-![页面截图 1](https://github.com/Innei/Shiro/assets/41265413/1b85c9be-0cd3-46b5-a089-a9ab97fdfecb)
-![页面截图 2](https://github.com/Innei/Shiro/assets/41265413/d808d288-c022-42f2-8d74-ad057a588771)
+## 仓库里有什么
 
-</details>
+当前仓库大致包含这些部分:
 
-## :zap: 性能测试
+- 基于 Next.js App Router 的前台站点
+- 一个轻量后台，包含内容编辑、评论管理等能力
+- 一批站点内用的 API routes
+  - GitHub / TMDB / Bangumi / 音乐接口代理
+  - S3 上传
+  - Webhook
+  - AI 摘要
+- 一套组件预览环境，放在 `storybook/`
+- Docker、standalone、CI release 相关脚本
 
-在 M2 MacBook Air 环境下对重负载页面的性能测试结果：
+## 技术栈
 
-![性能测试结果](https://github.com/Innei/Shiro/assets/41265413/f76152af-4a52-46a2-9b83-20567800ba75)
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Jotai
+- TanStack Query
+- Socket.IO
+- Mix Space API Client
 
-## :whale: 快速开始
+## 本地开发
 
-### :package: 预构建版本
+环境要求:
 
-从 [Releases](https://github.com/Innei/Shiro/releases) 页面下载最新的 `release.zip` 压缩包并解压：
+- Node.js >= 20
+- `pnpm@10.12.4`
+
+初始化:
 
 ```bash
-cd standalone
-vim .env # 配置环境变量
-export PORT=2323
-node server.js
+cp .env.template .env
+pnpm install
 ```
 
-### :docker: Docker Compose（推荐）
+启动开发环境:
 
 ```bash
-mkdir shiro && cd shiro
-wget https://raw.githubusercontent.com/Innei/Shiro/main/docker-compose.yml
-wget https://raw.githubusercontent.com/Innei/Shiro/main/.env.template .env
+pnpm dev
+```
 
-vim .env # 配置环境变量
-mkdir public # 放置自定义 Favicon
+默认端口:
+
+```text
+2323
+```
+
+## 常用脚本
+
+```bash
+pnpm dev         # 本地开发
+pnpm dev:turbo   # 使用 turbopack
+pnpm build       # 生产构建
+pnpm analyze     # 构建并分析 bundle
+pnpm lint        # eslint --fix
+```
+
+## 组件预览
+
+仓库里额外带了一套组件预览环境，在 `storybook/` 下。
+
+```bash
+cd storybook
+pnpm install
+pnpm dev
+```
+
+构建:
+
+```bash
+cd storybook
+pnpm build
+```
+
+## 部署说明
+
+### Docker
+
+```bash
+cp .env.template .env
 docker compose up -d
-
-# 后续更新
-docker compose pull
 ```
 
-## :memo: Markdown 扩展
+`docker-compose.yml` 默认会:
 
-了解更多 Markdown 扩展语法，请访问：https://shiro.innei.in/#/markdown
+- 挂载当前目录下的 `.env`
+- 挂载 `public/`
+- 暴露 `2323`
 
-## :heart: 致谢与许可
+### Standalone / Release
 
-**© 2024 Innei** - 本项目采用 AGPLv3 许可证，并附加特定的商业使用条件。
+构建产物相关脚本:
 
-使用本项目需要遵循 [附加条款和条件](ADDITIONAL_TERMS.md)。
+- `ci-release-build.sh`
+- `standalone-bundle.sh`
 
-**特别鸣谢：**
-- 部分代码参考了 GPT-4 和 [cali.so](https://github.com/CaliCastle/cali.so)
-- 感谢 Mix Space Team 和社区贡献者们的持续支持
+它们会围绕 `.next/standalone` 做打包，适合当前仓库自己的发布流程。
 
-**赞助版本：** [白い (Shiroi)](https://github.com/innei-dev/Shiroi) - 获得更多功能和持续更新
+## 环境变量
 
----
+最基础的环境变量可从 `.env.template` 开始。
 
-> [个人网站](https://innei.in/) · GitHub [@Innei](https://github.com/innei/)
+常见配置包括:
+
+- `NEXT_PUBLIC_API_URL`
+- `NEXT_PUBLIC_GATEWAY_URL`
+- `TMDB_API_KEY`
+- `GH_TOKEN`
+
+按你启用的功能不同，可能还需要额外补充:
+
+- `OPENAI_API_KEY`
+- `WEBHOOK_SECRET`
+- `S3_ACCESS_KEY`
+- `S3_SECRET_KEY`
+- `CROSSBELL_TOKEN`
+- `UPSTASH_URL`
+- `UPSTASH_TOKEN`
+
+## 使用预期
+
+如果你打算直接 fork 这个仓库，请先接受下面这件事:
+
+- 你拿到的不是一个“官方标准 Shiro”
+- 你拿到的是一套已经明显按个人需求改过的站点代码
+
+这意味着:
+
+- 某些功能会强依赖我的接口约定
+- 某些配置不会为了通用性做抽象
+- 某些改动可能只考虑“我这里能跑”
+
+如果你只是想搭一个标准 Shiro 站点，直接从上游开始通常更省事。
+
+## 致谢与许可
+
+- 上游项目: [Innei/Shiro](https://github.com/Innei/Shiro)
+- 生态项目: [Mix Space](https://github.com/mx-space)
+
+本项目沿用原项目的许可证与附加条款，请同时阅读:
+
+- [LICENSE](LICENSE)
+- [ADDITIONAL_TERMS.md](ADDITIONAL_TERMS.md)
