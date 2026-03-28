@@ -9,7 +9,6 @@ import { FloatPopover } from '~/components/ui/float-popover'
 import { softBouncePreset } from '~/constants/spring'
 import { TrackerAction } from '~/constants/tracker'
 import { usePageIsActive } from '~/hooks/common/use-is-active'
-import { useAppConfigSelector } from '~/providers/root/aggregation-data-provider'
 
 import { useHeaderMetaShouldShow } from './hooks'
 
@@ -44,10 +43,6 @@ const fetchSpotifyStatus = async (): Promise<SpotifyStatus> => {
 
 export const Activity = () => {
   const shouldShowMeta = useHeaderMetaShouldShow()
-  const activityConfig = useAppConfigSelector(
-    (config) => config.module.activity,
-  )
-  const { enable = false } = activityConfig || {}
   const isPageActive = usePageIsActive()
 
   const { data } = useQuery({
@@ -58,7 +53,7 @@ export const Activity = () => {
     retry: false,
     refetchOnReconnect: true,
     refetchOnWindowFocus: 'always',
-    enabled: enable && isPageActive,
+    enabled: isPageActive,
     meta: {
       persist: false,
     },
